@@ -2,7 +2,7 @@ const data = {
     products: [
         {
             name: '50w adaptor',
-            slug: 'nike-slim-shirt',
+            slug: '50w-adaptor',
             category: 'Shirts',
             image: '../public/levant-feature-charging-on-a-new-level-542582270.avif',
             price: 120,
@@ -13,8 +13,8 @@ const data = {
             description: 'high quality'
         },
                 {
-            name: '120 phone charger',
-            slug: 'nike-slim-shirt',
+            name: '120w phone charger',
+            slug: '120w-phone-charger',
             category: 'Shirts',
             image: '../public/51tYeIpyDIL._UF894,1000_QL80_.jpg',
             price: 120,
@@ -26,7 +26,7 @@ const data = {
         },
                 {
             name: 'laptop adaptor',
-            slug: 'nike-slim-shirt',
+            slug: 'laptop-adaptor',
             category: 'Shirts',
             image: '../public/images.jpg',
             price: 120,
