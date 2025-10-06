@@ -1,4 +1,4 @@
-import './App.css'
+import Lobby from './lobby/lobby'
 
 function App() {
 
@@ -8,6 +8,7 @@ function App() {
       <div>
         <h3>for now I'm putting up with the header shenanegens </h3>
         <h2>It seems we are going to make the backend</h2>
+        <Lobby />
       </div>
     </>
   )
