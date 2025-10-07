@@ -1,11 +1,9 @@
 import './lobby.css';
 import { Link } from 'react-router-dom';
-// import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
-import logger from 'use-reducer-logger';
 import { useReducer } from 'react';
-// import data from '../../assets/data';
+
 
 const reducer = (state, action) => {
   switch(action.type) {
@@ -21,12 +19,12 @@ const reducer = (state, action) => {
 }
 
 function Lobby() {
-  const [{loading, error, products}, dispatch] = useReducer(logger(reducer), {
+  const [{loading, error, products}, dispatch] = useReducer(reducer, {
     products: [],
     loading: true,
     error: '',
   })
- // const [products, setProducts] = useState([]);
+
   useEffect(() => {
       const fetchData = async () => {
         dispatch({type: 'FETCH_REQUEST'});
@@ -36,8 +34,6 @@ function Lobby() {
         } catch(err) {
           dispatch({type:'FETCH_FAIL', payload: err.message });
         }
-
-        //setProducts(result.data)
       }
       fetchData();
     }, [])
@@ -63,6 +59,11 @@ function Lobby() {
             </p>
           </div>)}
         </div>
+        <footer className='bg-red-800 text-white py-4 mt-50'>
+            <p className='text-center'>
+            all rights reserved
+            </p>
+        </footer>        
     </>
 }
 
