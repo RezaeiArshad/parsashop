@@ -5,11 +5,11 @@ const data = {
             slug: '50w-adaptor',
             category: 'Shirts',
             image: '../public/levant-feature-charging-on-a-new-level-542582270.avif',
-            price: 120,
+            price: "120,000 toman",
             countItStock: 10,
             brand: 'IranDoCo',
-            rating: 4.5,
-            numReviews: 10,
+            rating: 2.5,
+            numReviews: "hello?",
             description: 'high quality'
         },
                 {
@@ -17,11 +17,11 @@ const data = {
             slug: '120w-phone-charger',
             category: 'Shirts',
             image: '../public/51tYeIpyDIL._UF894,1000_QL80_.jpg',
-            price: 190,
+            price: "150,000 toman",
             countItStock: 10,
             brand: 'IranDoCo',
-            rating: 4.5,
-            numReviews: 10,
+            rating: 3.5,
+            numReviews: 50,
             description: 'high quality'
         },
                 {
@@ -29,11 +29,11 @@ const data = {
             slug: 'laptop-adaptor',
             category: 'Shirts',
             image: '../public/images.jpg',
-            price: 220,
+            price: "220,000 toman",
             countItStock: 10,
             brand: 'IranDoCo',
             rating: 4.5,
-            numReviews: 10,
+            numReviews: 4,
             description: 'high quality'
         }
     ]

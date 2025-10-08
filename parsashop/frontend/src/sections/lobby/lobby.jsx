@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useReducer } from 'react';
+import Product from '../../components/product';
 
 
 const reducer = (state, action) => {
@@ -46,18 +47,13 @@ function Lobby() {
           :
           error? <div>{error}</div>
           :
-          products.map(product => 
-          <div className='product' key={product.slug}>
-            <Link to={`/product/${product.slug}`}>
-              <img src={product.image} alt={product.name} />              
-            </Link>
-            <p>
-              {product.name}
-            </p>
-            <p>
-              {product.price}
-            </p>
-          </div>)}
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+            {products.map(product => 
+              <div className='product p-3' key={product.slug}>
+               <Product product={product}></Product>
+              </div>)}  
+          </div>
+          }
         </div>
         <footer className='bg-red-800 text-white py-4 mt-50'>
             <p className='text-center'>
