@@ -132,7 +132,7 @@ export default function OrderScreen() {
                 {order.isDelivered ? (
                   <MessageBox>Delivered at {order.deliveredAt}</MessageBox>
                 ) : (
-                  <MessageBox>Not Delivered</MessageBox>
+                  <MessageBox>Not Delivered </MessageBox>
                 )}
               </div>
               <div className="border-fg2 border-1 rounded-xl p-5 mt-4">
