@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
-import ThemeButton from '../../components/themebutton';
+import ThemeButton from './themebutton';
 import { useContext } from 'react';
 import { Store } from '../../store';
-import ShippingAddressScreen from '../shippingaddressscreen/shippingaddressscreen';
+import HeaderMenuButton from './headermenubutton';
+import HeaderMenu from './headermenu';
+import SearchBox from '../../components/searchbox';
 
 
-function Header() {
+export default function Header() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
 
@@ -17,9 +19,12 @@ function Header() {
     window.location.href = '/signin';
   }
 
+
   return (
     <>
-      <div className="flex justify-evenly h-[8vh] bg-fg2">
+      <div className="flex justify-evenly h-[8vh] bg-fg2 relative">
+        <HeaderMenuButton />
+        <SearchBox />
         <Link className="flex-center bg-blue-400" to="/">
           parsashop
         </Link>
@@ -47,9 +52,8 @@ function Header() {
           </Link>
         )}
         <ThemeButton />
+        <HeaderMenu />
       </div>
     </>
   );
 }
-
-export default Header;

@@ -19,7 +19,7 @@ const data = {
         {
             name: '50w adaptor',
             slug: '50w-adaptor',
-            category: 'Shirts',
+            category: 'adaptors',
             image: '../public/levant-feature-charging-on-a-new-level-542582270.avif',
             price: 120000,
             countInStock: 3,
@@ -31,7 +31,7 @@ const data = {
                 {
             name: '120w phone charger',
             slug: '120w-phone-charger',
-            category: 'Shirts',
+            category: 'chargers',
             image: '../public/51tYeIpyDIL._UF894,1000_QL80_.jpg',
             price: 150000,
             countInStock: 0,
@@ -44,7 +44,7 @@ const data = {
                 {
             name: 'laptop adaptor',
             slug: 'laptop-adaptor',
-            category: 'Shirts',
+            category: 'adaptors',
             image: '../public/images.jpg',
             price: 220000,
             countInStock: 4,

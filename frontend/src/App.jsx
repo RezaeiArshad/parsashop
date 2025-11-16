@@ -17,7 +17,7 @@ import ProfileScreen from './sections/profilescreen/profilescreen';
 
 function App() {
   return (
-    <div className=''>
+    <div id='theme-div' className=''>
       <div className="text-fg bg-bg dark:bg-bg-d dark:text-fg-d relative pb-15 transition-colors duration-300">
         <BrowserRouter>
           <ToastContainer position="bottom-center" limit={1} />
