@@ -2,7 +2,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 @theme {
     --color-bg: white;
     --color-fg: black;
@@ -13,8 +12,23 @@
     --color-fg-d:white;
     --color-fg2-d: silver;
     --color-high-d: #0000ff;
-}
 
+    --font-sans: 'Vazirmatn', ui-sans-serif, sans-serif;
+}
+/* this is for motion*/
+@layer base {
+  :root {
+    --bg: white;
+    --fg: black;
+    --fg2: silver;
+    --high: #0000ff;
+    /* the dark colors */
+    --bg: black;
+    --fg: white;
+    --fg2: silver;
+    --high: #0000ff;
+  }
+}
 
 @layer components {
     .flex-center {

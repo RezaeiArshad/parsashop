@@ -1,5 +1,5 @@
 import express from 'express';
-import Product from '../models/productmodel.js';
+import Product, {CATEGORIES} from '../models/productmodel.js';
 import expressAsyncHandler from 'express-async-handler';
 
 
@@ -13,8 +13,7 @@ productRouter.get('/', async (req, res) => {
 productRouter.get(
   '/categories',
   expressAsyncHandler(async (req, res) => {
-    const categories = await Product.find().distinct('category');
-    res.send(categories);
+    res.send(CATEGORIES);
   })
 );
 

@@ -37,15 +37,16 @@ export default function HeaderMenuButton() {
           }
           updateStatus('inactive');
         }}
+
         onClick={() => {
           if (
             headerButtonStatus === 'clicked' ||
             headerButtonStatus === 'clickedHovered'
           ) {
-            updateStatus('inactive');
+            updateStatus('hovered');
             return;
           }
-          updateStatus('clicked');
+          updateStatus('clickedHovered');
         }}
         initial={false}
         animate={headerButtonStatus}
@@ -66,7 +67,7 @@ export default function HeaderMenuButton() {
             boxShadow: '0 0 10px 2px #00cee4',
           },
         }}
-        className="w-[40px] h-[40px] my-auto fill-fg cursor-pointer border-2 border-fg rounded-md relative z-4"
+        className="w-[40px] h-[40px] my-auto fill-fg cursor-pointer border-2 border-fg rounded-md relative z-7"
       >
         <motion.svg
           initial={false}

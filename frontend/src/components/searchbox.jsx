@@ -12,14 +12,14 @@ export default function SearchBox() {
   return (
     <>
       <form className="flex h-[80%] my-auto" onSubmit={submitHandler}>
-        <input
-          onChange={(e) => setQuery(e.target.value)}
-          placeHolder="Products For Products..."
-          className="w-[80%] h-full bg-bg p-2 rounded-s-xl border-1"
-        />
-        <button className=" bg-high p-2 rounded-e-xl text-fg-d hover:bg-yellow-400 transition-colors duration-300 cursor-pointer">
+        <button className=" bg-high p-2 rounded-s-xl text-fg-d hover:bg-yellow-400 transition-colors duration-300 cursor-pointer">
           Search
         </button>
+        <input
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="جستو و جو "
+          className="w-[80%] h-full bg-bg p-2 border-1 rounded-e-xl"
+        />
       </form>
     </>
   );

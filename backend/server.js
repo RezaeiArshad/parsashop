@@ -6,6 +6,7 @@ import seedRouter from './routes/seedroutes.js';
 import productRouter from './routes/productroutes.js';
 import userRouter from './routes/userroutes.js';
 import orderRouter from './routes/orderroutes.js';
+import searchRouter from './routes/searchRoutes.js';
 
 dotenv.config();
 
@@ -26,13 +27,14 @@ app.use('/api/seed', seedRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/search', searchRouter)
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/dist')));
 
 app.get('/*path', (req, res) =>
   res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'))
-);
+); 
 
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });

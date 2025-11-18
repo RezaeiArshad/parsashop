@@ -25,19 +25,7 @@ export default function Header() {
       <div className="flex justify-evenly h-[8vh] bg-fg2 relative">
         <HeaderMenuButton />
         <SearchBox />
-        <Link className="flex-center bg-blue-400" to="/">
-          parsashop
-        </Link>
-        <div className="flex-center">
-          <Link to="/cart" className="nav-link flex-center gap-1.5">
-            Cart
-            {cart.cartItems.length > 0 && (
-              <div className="bg-red-500 p-1 rounded-full text-fg text-center">
-                {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-              </div>
-            )}
-          </Link>
-        </div>
+        <ThemeButton />
         {userInfo ? (
           <div className="flex-center gap-4">
             <Link to="/profile">{userInfo.name}</Link>
@@ -51,7 +39,19 @@ export default function Header() {
             Sign In
           </Link>
         )}
-        <ThemeButton />
+        <Link className="flex-center bg-blue-400" to="/">
+          parsashop
+        </Link>
+        <div className="flex-center">
+          <Link to="/cart" className="nav-link flex-center gap-1.5">
+            Cart
+            {cart.cartItems.length > 0 && (
+              <div className="bg-red-500 p-1 rounded-full text-fg text-center">
+                {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+              </div>
+            )}
+          </Link>
+        </div>
         <HeaderMenu />
       </div>
     </>
