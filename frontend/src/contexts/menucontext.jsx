@@ -27,3 +27,17 @@ export const useMenu = () => {
   }
   return context;
 };
+
+export const FilterContext = createContext({
+   filtersFor: 'ماژول',
+   setFiltersFor: () => {}
+}) 
+
+export const FilterContextProvider = ({ children }) => {
+  const [filtersFor, setFiltersFor] = useState("ماژول");
+  return (
+    <FilterContext.Provider value={{filtersFor, setFiltersFor}}>
+      {children}
+    </FilterContext.Provider>
+  )
+}

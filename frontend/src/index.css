@@ -18,15 +18,15 @@
 /* this is for motion*/
 @layer base {
   :root {
-    --bg: white;
+    --bg: rgb(255, 255, 255);
     --fg: black;
     --fg2: silver;
     --high: #0000ff;
     /* the dark colors */
-    --bg: black;
-    --fg: white;
-    --fg2: silver;
-    --high: #0000ff;
+    --bg-d: black;
+    --fg-d: white;
+    --fg2-d: silver;
+    --high-d: #0000ff;
   }
 }
 
