@@ -1,12 +1,13 @@
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTheme } from '../../hooks/usetheme';
-import { useMenu } from '../../contexts/menucontext';
+import { FilterContext, useMenu } from '../../contexts/menucontext';
 
 export default function HeaderMenuButton() {
   const menu = useMenu()
   const [headerButtonStatus, setHeaderButtonStatus] = useState('inactive');
   const { theme } = useTheme();
+    const { setFiltersFor } = useContext(FilterContext);
 
   useEffect(() => {
     updateStatus(menu.status)
@@ -43,6 +44,7 @@ export default function HeaderMenuButton() {
             headerButtonStatus === 'clicked' ||
             headerButtonStatus === 'clickedHovered'
           ) {
+            setFiltersFor("ماژول")
             updateStatus('hovered');
             return;
           }

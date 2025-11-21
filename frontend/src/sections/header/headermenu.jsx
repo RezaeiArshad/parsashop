@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { FilterContext, useMenu } from '../../contexts/menucontext';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { getError } from '../../utils';
 import { AnimatePresence, motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { svgArr } from '../../assets/svg';
 import FilterTree from '../searchscreen/filterTree';
+import { cats } from '../searchscreen/categoryData';
 
 export default function HeaderMenu() {
   const { status } = useMenu();
@@ -14,7 +12,6 @@ export default function HeaderMenu() {
   const isOpen = status === 'clicked' || status === 'clickedHovered';
   const [isVisuallyOpen, setIsVisuallyOpen] = useState(isOpen);
   const { filtersFor, setFiltersFor } = useContext(FilterContext);
-  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -26,17 +23,6 @@ export default function HeaderMenu() {
     menu.setStatus(status);
   };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data } = await axios.get(`/api/products/categories`);
-        setCategories(data);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
-    fetchCategories();
-  }, []);
 
   return (
     <>
@@ -64,7 +50,7 @@ export default function HeaderMenu() {
           <>
             <motion.div
               key={'menu'}
-              className="h-fit pb-5 lg:w-[25vw] md:w-[20vw] bg-bg absolute right-0"
+              className="h-fit pb-5 lg:w-[25vw] md:w-[20vw] bg-bg absolute right-0 rounded-b-md"
               style={{ zIndex: isVisuallyOpen ? 4 : -3 }}
               initial={{ opacity: 0, x: 300 }}
               animate={{ opacity: 0.98, x: 0 }}
@@ -83,7 +69,7 @@ export default function HeaderMenu() {
                 <h1 className="text-2xl">دسته بندی ها</h1>
               </div>
               <div className="grid gap-4 mx-[10%] text-xl">
-                {categories.map((category) => (
+                {Object.keys(cats).map((category) => (
                   <Link
                     key={category}
                     onClick={() => {

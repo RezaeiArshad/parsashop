@@ -14,6 +14,9 @@ import OrderScreen from './sections/orderscreen/orderscreen';
 import OrderHistoryScreen from './sections/orderhistory/orderhistory';
 import ProfileScreen from './sections/profilescreen/profilescreen';
 import SearchScreen from './sections/searchscreen/searchscreen';
+import ProtectedRoute from './components/protectedRoute';
+import DashBoardScreen from './sections/adminscreens/dashBoardScreen';
+import AdminRoute from './components/adminRoute';
 
 function App() {
   return (
@@ -36,10 +39,34 @@ function App() {
               <Route path="/signup" element={<SignupScreen />} />
               <Route path="/payment" element={<PaymentMethodScreen />} />
               <Route path="/placeorder" element={<PlaceOrderScreen />} />
-              <Route path="/order/:id" element={<OrderScreen />} />
-              <Route path="/orderhistory" element={<OrderHistoryScreen />} />
-              <Route path="/profile" element={<ProfileScreen />} />
+              <Route
+                path="/order/:id"
+                element={
+                  <ProtectedRoute>
+                    <OrderScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orderhistory"
+                element={
+                  <ProtectedRoute>
+                    <OrderHistoryScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfileScreen />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/search" element={<SearchScreen />} />
+              {/* these are the admin routes */}
+
+              <Route path='/admin/dashboard' element={<AdminRoute><DashBoardScreen /></AdminRoute>} />
             </Routes>
           </div>
           <footer className="py-3 absolute bottom-0 right-0 left-0">

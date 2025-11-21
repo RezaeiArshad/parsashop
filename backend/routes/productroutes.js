@@ -1,5 +1,5 @@
 import express from 'express';
-import Product, {CATEGORIES} from '../models/productmodel.js';
+import Product, { CATEGORIES, cats } from '../models/productmodel.js';
 import expressAsyncHandler from 'express-async-handler';
 
 
@@ -9,13 +9,6 @@ productRouter.get('/', async (req, res) => {
   const products = await Product.find();
   res.send(products);
 });
-
-productRouter.get(
-  '/categories',
-  expressAsyncHandler(async (req, res) => {
-    res.send(CATEGORIES);
-  })
-);
 
 productRouter.get('/slug/:slug', async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug });
