@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { FilterContext, useMenu } from '../../contexts/menucontext';
+import { FilterContext, SubsetContext, useMenu } from '../../contexts/menucontext';
 import { AnimatePresence, motion } from 'motion/react';
 import { cats, subsets } from './categoryData';
 import FilterTrigger from '../../components/filterTrigger';
@@ -11,6 +11,7 @@ export default function FilterTree() {
   const isOpen = status === 'clicked' || status === 'clickedHovered';
   const [isVisuallyOpen, setIsVisuallyOpen] = useState(isOpen);
   const [categoryFilters, setCategoryFilters] = useState([]);
+  const {subsetCategory, setSubsetCategory} = useContext(SubsetContext);
 
   useEffect(() => {
     if (isOpen) {
@@ -50,10 +51,10 @@ export default function FilterTree() {
               {subsets[filtersFor].map((subset) => (
                 <motion.h1
                   initial="inactive"
-                  animate={'inactive'}
+                  animate={subsetCategory === subset ? "active" : "inactive"}
                   whileHover="active"
                   transition={{ duration: 0.2 }}
-                  className="border-b-1 border-b-fg2 p-1 flex items-center gap-2 h-7"
+                  className="cursor-pointer border-b-1 border-b-fg2 p-1 flex items-center gap-2 h-7"
                   variants={{
                     active: {
                       color: 'var(--high)',
@@ -65,6 +66,7 @@ export default function FilterTree() {
                     },
                   }}
                   key={subset}
+                  onHoverStart={() => setSubsetCategory(subset)}
                 >
                   {subset}
                 </motion.h1>
@@ -86,7 +88,7 @@ export default function FilterTree() {
               }}
               className="absolute bg-bg w-[40vw] h-[40vh] top-[15vh] right-[45vw] p-4 rounded-e-md"
             >
-              <h1 className="text-2xl h-[15%]">فیلتر ها</h1>
+              <h1 className="text-2xl h-[15%]"><span className='text-fg2'>فیلتر ها برای</span>{" "}{filtersFor}/{subsetCategory}</h1>
               <div className="flex h-[80%]">
                 <div className="h-[100%] w-[30%] flex flex-col justify-around items-center">
                   {categoryFilters.slice(0, 3).map((filter) => (

@@ -5,14 +5,17 @@ import { StoreProvider } from './store.jsx';
 import {
   FilterContextProvider,
   MenuProvider,
+  SubsetContextProvider,
 } from './contexts/menucontext.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <FilterContextProvider>
-    <MenuProvider>
-      <StoreProvider>
-        <App />
-      </StoreProvider>
-    </MenuProvider>
-  </FilterContextProvider>
+  <SubsetContextProvider>
+    <FilterContextProvider>
+      <MenuProvider>
+        <StoreProvider>
+          <App />
+        </StoreProvider>
+      </MenuProvider>
+    </FilterContextProvider>
+  </SubsetContextProvider>
 );

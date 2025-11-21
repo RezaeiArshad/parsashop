@@ -41,3 +41,16 @@ export const FilterContextProvider = ({ children }) => {
     </FilterContext.Provider>
   )
 }
+export const SubsetContext = createContext({
+  subsetCategory: "کاهنده",
+  setSubsetCategory: () => {}
+})
+
+export const SubsetContextProvider = ({ children }) => {
+  const [subsetCategory, setSubsetCategory] = useState("کاهنده");
+  return (
+    <SubsetContext.Provider value={{subsetCategory, setSubsetCategory}}>
+      { children }
+    </SubsetContext.Provider>
+  )
+}

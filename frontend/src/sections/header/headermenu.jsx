@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { FilterContext, useMenu } from '../../contexts/menucontext';
+import { FilterContext, SubsetContext, useMenu } from '../../contexts/menucontext';
 import { AnimatePresence, motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { svgArr } from '../../assets/svg';
 import FilterTree from '../searchscreen/filterTree';
-import { cats } from '../searchscreen/categoryData';
+import { cats, subsets } from '../searchscreen/categoryData';
 
 export default function HeaderMenu() {
   const { status } = useMenu();
@@ -12,6 +12,7 @@ export default function HeaderMenu() {
   const isOpen = status === 'clicked' || status === 'clickedHovered';
   const [isVisuallyOpen, setIsVisuallyOpen] = useState(isOpen);
   const { filtersFor, setFiltersFor } = useContext(FilterContext);
+  const {setSubsetCategory} = useContext(SubsetContext);
 
   useEffect(() => {
     if (isOpen) {
@@ -94,7 +95,9 @@ export default function HeaderMenu() {
                           background: '#f0f0f0',
                         },
                       }}
-                      onHoverStart={() => setFiltersFor(category)}
+                      onHoverStart={() => {
+                        setSubsetCategory(subsets[category][0])
+                        setFiltersFor(category)}}
                     >
                       {svgArr[category]}
                       {category}
