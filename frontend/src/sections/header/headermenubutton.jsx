@@ -1,22 +1,27 @@
 import { motion } from 'motion/react';
 import { useContext, useEffect, useState } from 'react';
 import { useTheme } from '../../hooks/usetheme';
-import { FilterContext, useMenu } from '../../contexts/menucontext';
+import {
+  CategoryContext,
+  SubsetContext,
+  useMenu,
+} from '../../contexts/menucontext';
 
 export default function HeaderMenuButton() {
-  const menu = useMenu()
+  const menu = useMenu();
   const [headerButtonStatus, setHeaderButtonStatus] = useState('inactive');
   const { theme } = useTheme();
-    const { setFiltersFor } = useContext(FilterContext);
+  const { setCategory } = useContext(CategoryContext);
+  const { setSubsetCategory } = useContext(SubsetContext);
 
   useEffect(() => {
-    updateStatus(menu.status)
-  }, [menu.status])
+    updateStatus(menu.status);
+  }, [menu.status]);
 
   const updateStatus = (status) => {
     setHeaderButtonStatus(status);
     menu.setStatus(status);
-  }
+  };
 
   return (
     <>
@@ -38,13 +43,13 @@ export default function HeaderMenuButton() {
           }
           updateStatus('inactive');
         }}
-
         onClick={() => {
           if (
             headerButtonStatus === 'clicked' ||
             headerButtonStatus === 'clickedHovered'
           ) {
-            setFiltersFor("ماژول")
+            setCategory('ماژول');
+            setSubsetCategory('کاهنده');
             updateStatus('hovered');
             return;
           }

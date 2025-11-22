@@ -1,17 +1,23 @@
 import { useContext, useEffect, useState } from 'react';
-import { FilterContext, SubsetContext, useMenu } from '../../contexts/menucontext';
+import { CategoryContext, SubsetContext, useMenu } from '../../contexts/menucontext';
 import { AnimatePresence, motion } from 'motion/react';
 import { cats, subsets } from './categoryData';
 import FilterTrigger from '../../components/filterTrigger';
+import { SearchContext } from '../../contexts/searchContext';
 
 export default function FilterTree() {
-  const { filtersFor } = useContext(FilterContext);
   const { status } = useMenu();
-  const menu = useMenu();
   const isOpen = status === 'clicked' || status === 'clickedHovered';
   const [isVisuallyOpen, setIsVisuallyOpen] = useState(isOpen);
   const [categoryFilters, setCategoryFilters] = useState([]);
   const {subsetCategory, setSubsetCategory} = useContext(SubsetContext);
+  const { category } = useContext(CategoryContext);
+  const {setSearchDetails} = useContext(SearchContext);
+
+  useEffect(() => {
+    // here i want to set the first item to category and the second to subsetCategory
+    setSearchDetails()
+  }, [category, subsetCategory])
 
   useEffect(() => {
     if (isOpen) {
@@ -19,13 +25,13 @@ export default function FilterTree() {
     }
   }, [isOpen]);
 
-  const updateStatus = (status) => {
-    menu.setStatus(status);
-  };
+  const search = () => {
+
+  }
 
   useEffect(() => {
-    setCategoryFilters(cats[filtersFor]);
-  }, [filtersFor]);
+    setCategoryFilters(cats[category]);
+  }, [category]);
 
   return (
     <>
@@ -48,7 +54,7 @@ export default function FilterTree() {
               }}
               className="absolute bg-bg w-[20vw] h-[55vh] top-[10vh] right-[25vw] p-4 rounded-e-md overflow-y-scroll flex flex-col gap-2"
             >
-              {subsets[filtersFor].map((subset) => (
+              {subsets[category].map((subset) => (
                 <motion.h1
                   initial="inactive"
                   animate={subsetCategory === subset ? "active" : "inactive"}
@@ -88,19 +94,19 @@ export default function FilterTree() {
               }}
               className="absolute bg-bg w-[40vw] h-[40vh] top-[15vh] right-[45vw] p-4 rounded-e-md"
             >
-              <h1 className="text-2xl h-[15%]"><span className='text-fg2'>فیلتر ها برای</span>{" "}{filtersFor}/{subsetCategory}</h1>
+              <h1 className="text-2xl h-[15%]"><span className='text-fg2'>فیلتر ها برای</span>{" "}{category}/{subsetCategory}</h1>
               <div className="flex h-[80%]">
-                <div className="h-[100%] w-[30%] flex flex-col justify-around items-center">
+                <div className="h-[100%] w-[30%] flex flex-col justify-around items-center gap-2">
                   {categoryFilters.slice(0, 3).map((filter) => (
                     <FilterTrigger key={filter} name={filter} />
                   ))}
                 </div>
-                <div className="h-[70%] my-auto bg-red-500 w-[30%] flex flex-col justify-around items-center">
+                <div className="h-[70%] my-auto w-[30%] flex flex-col justify-around items-center gap-2">
                   {categoryFilters.slice(3, 5).map((filter) => (
-                    <h1 key={filter}>{filter}</h1>
+                    <FilterTrigger key={filter}name={filter} />
                   ))}
                 </div>
-                <button className="w-[30%] h-fit my-auto">
+                <button className="w-[30%] h-fit my-auto" onClick={search()}>
                   موارد پیدا شده
                 </button>
               </div>

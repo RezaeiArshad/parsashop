@@ -28,19 +28,20 @@ export const useMenu = () => {
   return context;
 };
 
-export const FilterContext = createContext({
-   filtersFor: 'ماژول',
-   setFiltersFor: () => {}
+export const CategoryContext = createContext({
+   category: 'ماژول',
+   setCategory: () => {}
 }) 
 
-export const FilterContextProvider = ({ children }) => {
-  const [filtersFor, setFiltersFor] = useState("ماژول");
+export const CategoryContextProvider = ({ children }) => {
+  const [category, setCategory] = useState("ماژول");
   return (
-    <FilterContext.Provider value={{filtersFor, setFiltersFor}}>
+    <CategoryContext.Provider value={{category, setCategory}}>
       {children}
-    </FilterContext.Provider>
+    </CategoryContext.Provider>
   )
 }
+
 export const SubsetContext = createContext({
   subsetCategory: "کاهنده",
   setSubsetCategory: () => {}

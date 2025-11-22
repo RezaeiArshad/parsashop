@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import PriceComma from '../hooks/pricecomma';
 
 export default function FilterTrigger({ name }) {
@@ -14,7 +14,7 @@ export default function FilterTrigger({ name }) {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setIsOpen(false);
-    }, 200);
+    }, 100);
   };
 
   useEffect(() => {
@@ -84,30 +84,44 @@ export default function FilterTrigger({ name }) {
   };
 
   return (
-    <div
-      className="relative inline-block"
+    <motion.div
+      className="relative flex items-center justify-center filter-options cursor-pointer rounded-xl"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      animate={isOpen ? 'active' : 'inactive'}
+      variants={{
+        active: { border: '1px solid var(--high)' },
+        inactive: { border: '1px solid var(--fg2)' },
+      }}
+      initial="inactive"
+      transition={{ duration: 0.2 }}
     >
       <motion.h1
-        className="cursor-pointer hover:text-blue-600 transition-colors"
+        animate={isOpen ? 'active' : 'inactive'}
         onClick={() => setIsOpen(!isOpen)}
-        initial={{ opacity: 0.8 }}
-        whileHover={{ opacity: 1, scale: 1.03 }}
-        whileTap={{ scale: 0.98 }}
+        variants={{
+          active: { opacity: 1, scale: 1.08, color: 'var(--high)' },
+          inactive: { opacity: 0.8 },
+          tapped: { scale: 0.98 },
+        }}
+        initial="inactive"
+        whileTap="tapped"
+        transition={{ duration: 0.2 }}
       >
         {name}
       </motion.h1>
-      {isOpen && (
-        <motion.div
-          className="absolute left-0 mt-1 z-10 bg-white border rounded shadow-lg"
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-        >
-          {renderFilterContent()}
-        </motion.div>
-      )}
-    </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="absolute top-[70%] mt-1 z-10 bg-white border rounded shadow-lg"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+          >
+            {renderFilterContent()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

@@ -3,19 +3,23 @@ import './index.css';
 import App from './App.jsx';
 import { StoreProvider } from './store.jsx';
 import {
-  FilterContextProvider,
+  CategoryContextProvider,
   MenuProvider,
   SubsetContextProvider,
 } from './contexts/menucontext.jsx';
+import { SearchContextProvider } from './contexts/searchContext.jsx'; 
 
 createRoot(document.getElementById('root')).render(
+  <SearchContextProvider>
   <SubsetContextProvider>
-    <FilterContextProvider>
+    <CategoryContextProvider>
       <MenuProvider>
         <StoreProvider>
           <App />
         </StoreProvider>
       </MenuProvider>
-    </FilterContextProvider>
-  </SubsetContextProvider>
+    </CategoryContextProvider>
+  </SubsetContextProvider>    
+  </SearchContextProvider>
+
 );

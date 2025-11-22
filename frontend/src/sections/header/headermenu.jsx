@@ -1,5 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
-import { FilterContext, SubsetContext, useMenu } from '../../contexts/menucontext';
+import {
+  CategoryContext,
+  SubsetContext,
+  useMenu,
+} from '../../contexts/menucontext';
 import { AnimatePresence, motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { svgArr } from '../../assets/svg';
@@ -11,8 +15,8 @@ export default function HeaderMenu() {
   const menu = useMenu();
   const isOpen = status === 'clicked' || status === 'clickedHovered';
   const [isVisuallyOpen, setIsVisuallyOpen] = useState(isOpen);
-  const { filtersFor, setFiltersFor } = useContext(FilterContext);
-  const {setSubsetCategory} = useContext(SubsetContext);
+  const { category, setCategory } = useContext(CategoryContext);
+  const { setSubsetCategory } = useContext(SubsetContext);
 
   useEffect(() => {
     if (isOpen) {
@@ -24,6 +28,11 @@ export default function HeaderMenu() {
     menu.setStatus(status);
   };
 
+  const menuClosed = () => {
+          setCategory('ماژول');
+          setSubsetCategory('کاهنده');          
+          updateStatus('inactive');    
+  }
 
   return (
     <>
@@ -44,7 +53,7 @@ export default function HeaderMenu() {
             setIsVisuallyOpen(false);
           }
         }}
-        onClick={() => updateStatus('inactive')}
+        onClick={() => menuClosed()}
       ></motion.div>
       <AnimatePresence>
         {isOpen && (
@@ -70,18 +79,15 @@ export default function HeaderMenu() {
                 <h1 className="text-2xl">دسته بندی ها</h1>
               </div>
               <div className="grid gap-4 mx-[10%] text-xl">
-                {Object.keys(cats).map((category) => (
+                {Object.keys(cats).map((categoryName) => (
                   <Link
-                    key={category}
-                    onClick={() => {
-                      updateStatus('inactive');
-                      setFiltersFor('ماژول');
-                    }}
-                    to={`/search?category=${category}`}
+                    key={categoryName}
+                    onClick={() => menuClosed()}
+                    to={`/search?categoryName=${categoryName}`}
                   >
                     <motion.h1
                       initial="inactive"
-                      animate={filtersFor === category ? 'active' : 'inactive'}
+                      animate={category === categoryName ? 'active' : 'inactive'}
                       whileHover="active"
                       transition={{ duration: 0.2 }}
                       className="border-b-1 border-b-fg2 p-1 flex items-center gap-2"
@@ -96,11 +102,12 @@ export default function HeaderMenu() {
                         },
                       }}
                       onHoverStart={() => {
-                        setSubsetCategory(subsets[category][0])
-                        setFiltersFor(category)}}
+                        setSubsetCategory(subsets[categoryName][0]);
+                        setCategory(categoryName);
+                      }}
                     >
-                      {svgArr[category]}
-                      {category}
+                      {svgArr[categoryName]}
+                      {categoryName}
                     </motion.h1>
                   </Link>
                 ))}

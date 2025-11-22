@@ -78,3 +78,8 @@ img {
     opacity: 0;
   }
 }
+
+.filter-options {
+  width: 90%;
+  height: 100%;
+}
