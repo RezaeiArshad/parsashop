@@ -245,6 +245,28 @@ const kitSvg = (
   </svg>
 );
 
+const toolsSvg = (
+  <svg
+    height="1.5rem"
+    width="1.5rem"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 460 460"
+    stroke="currentColor"
+    strokeWidth="12"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path
+      d="M412.42,350c-4.527-12.764-14.656-22.893-27.42-27.42V50c0-8.284-6.716-15-15-15H178.964
+    c-8.284,0-15,6.716-15,15v103.787L147.5,137.322l-21.213,21.213l42.071,42.071c2.813,2.813,6.628,4.394,10.606,4.394
+    c3.978,0,7.793-1.58,10.606-4.394l42.072-42.071l-21.213-21.213l-16.465,16.465V65H355v257.58
+    c-12.764,4.527-22.893,14.656-27.42,27.42H285v-30c0-8.284-6.716-15-15-15H66c-8.284,0-15,6.716-15,15v30H0v30h51v30
+    c0,8.284,6.716,15,15,15h204c8.284,0,15-6.716,15-15v-30h42.58c6.192,17.459,22.865,30,42.42,30s36.228-12.541,42.42-30H460v-30
+    H412.42z M255,395H81v-60h174V395z M370,380c-8.271,0-15-6.729-15-15s6.729-15,15-15s15,6.729,15,15S378.271,380,370,380z"
+    />
+  </svg>
+);
+
 const projectSvg = (
   <svg
     width="1.5rem"
@@ -264,4 +286,4 @@ const projectSvg = (
   </svg>
 );
 
-export const svgArr = {"ماژول":moduleSvg, "سنسور":sensorSvg, "موتور":motorSvg, "باتری":batterySvg, "شارژر":chargerSvg, "بالانسر":balancerSvg, "فن":fanSvg, 'DIY کیت':kitSvg, "پروژه":projectSvg}
+export const svgArr = {"ماژول":moduleSvg, "سنسور":sensorSvg, "موتور":motorSvg, "باتری":batterySvg, "شارژر":chargerSvg, "بالانسر":balancerSvg, "فن":fanSvg, 'DIY کیت':kitSvg,'تجهیزات الکترونیک':toolsSvg ,"پروژه":projectSvg}

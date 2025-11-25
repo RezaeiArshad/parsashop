@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useReducer } from 'react';
 import Product from '../../components/product';
 import { usePageTitle } from '../../hooks/usepagetitle';
 import LoadingBox from '../../components/loadingbox';
 import MessageBox from '../../components/messagebox';
+import { SearchContext } from '../../contexts/searchContext';
 
 
 const reducer = (state, action) => {

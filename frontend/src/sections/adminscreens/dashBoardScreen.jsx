@@ -37,6 +37,7 @@ export default function DashBoardScreen() {
         const { data } = await axios.get('/api/orders/summary', {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
+          dispatch({ type: 'FETCH_SUCCESS', payload: data})        
       } catch (err) {
         dispatch({
           type: 'FETCH_FAIL',
@@ -56,7 +57,60 @@ export default function DashBoardScreen() {
         ) : error ? (
           <MessageBox>{error}</MessageBox>
         ) : (
-          <></>
+          <>
+            <div>
+              <h1>تعداد کاربرها</h1>
+              {summary.users && summary.users[0]
+                ? summary.users[0].numUsers
+                : 0}
+            </div>
+            <div>
+              <h1>تعداد سفارش ها</h1>
+              {summary.orders && summary.orders[0]
+                ? summary.orders[0].numOrders
+                : 0}
+            </div>
+            <div>
+              <h1>حجم درآمد</h1>
+              {summary.orders && summary.users[0]
+                ? summary.orders[0].totalSales.toFixed(2)
+                : 0}
+            </div>
+            <div>
+            <h1>فروش ها</h1>
+            {summary.dailyOrders.length === 0 ? (
+              <MessageBox>موردی یافت نشد</MessageBox>
+            ) : (
+              <Chart
+                width="100%"
+                height="80rem"
+                chartType="AreaChart"
+                loader={<div>در حال بارگذاری...</div>}
+                data={[
+                  ['Date', 'Sales'],
+                  ...summary.dailyOrders.map((x) => [x._id, x.sales]),
+                ]}
+              ></Chart>
+            )}
+            </div>
+            <div>
+              <h2>دسته بندی ها</h2>
+              {summary.productCategories.length === 0 ? (
+                <MessageBox>موردی یافت نشد</MessageBox>
+              ) : (
+                <Chart
+                  width="100%"
+                  height="80rem"
+                  chartType="PieChart"
+                  loader={<div>در حال بارگذاری...</div>}
+                  data={[
+                    ['Category', 'Products'],
+                    ...summary.productCategories.map((x) => [x._id, x.count]),
+                  ]}
+                ></Chart>
+              )}
+            </div>
+          </>
         )}
       </div>
     </>
