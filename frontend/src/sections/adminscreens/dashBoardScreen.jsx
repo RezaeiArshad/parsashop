@@ -5,6 +5,7 @@ import { Store } from '../../store';
 import { getError } from '../../utils';
 import LoadingBox from '../../components/loadingbox';
 import MessageBox from '../../components/messagebox';
+import { usePageTitle } from '../../hooks/usepagetitle';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -48,6 +49,8 @@ export default function DashBoardScreen() {
     fetchData();
   }, [userInfo]);
 
+  usePageTitle('Dashboard');
+  
   return (
     <>
       <div>

@@ -17,6 +17,7 @@ import SearchScreen from './sections/searchscreen/searchscreen';
 import ProtectedRoute from './components/protectedRoute';
 import DashBoardScreen from './sections/adminscreens/dashBoardScreen';
 import AdminRoute from './components/adminRoute';
+import ProductListScreen from './sections/adminscreens/productListScreen';
 
 function App() {
   return (
@@ -66,7 +67,22 @@ function App() {
               <Route path="/search" element={<SearchScreen />} />
               {/* these are the admin routes */}
 
-              <Route path='/admin/dashboard' element={<AdminRoute><DashBoardScreen /></AdminRoute>} />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <AdminRoute>
+                    <DashBoardScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <AdminRoute>
+                    <ProductListScreen />
+                  </AdminRoute>
+                }
+              />
             </Routes>
           </div>
           <footer className="py-3 absolute bottom-0 right-0 left-0">
