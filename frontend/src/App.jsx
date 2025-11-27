@@ -18,6 +18,7 @@ import ProtectedRoute from './components/protectedRoute';
 import DashBoardScreen from './sections/adminscreens/dashBoardScreen';
 import AdminRoute from './components/adminRoute';
 import ProductListScreen from './sections/adminscreens/productListScreen';
+import ProductEditScreen from './sections/adminscreens/productEditScreen';
 
 function App() {
   return (
@@ -72,6 +73,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <DashBoardScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/product/:id"
+                element={
+                  <AdminRoute>
+                    <ProductEditScreen />
                   </AdminRoute>
                 }
               />
