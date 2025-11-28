@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import Rating from '../../components/rating';
 import { usePageTitle } from '../../hooks/usepagetitle';
 import LoadingBox from '../../components/loadingbox';
-import MessageBox from '../../components/MessageBox';
+import MessageBox from '../../components/messageBox';
 import { motion } from 'motion/react';
 import { getError } from '../../utils';
 import { Store } from '../../store';
@@ -43,11 +43,12 @@ function ProductScreen() {
   const params = useParams();
   const { slug } = params;
 
-  const [{ loading, error, product, loadingCreateReview }, dispatch] = useReducer(reducer, {
-    product: [],
-    loading: true,
-    error: '',
-  });
+  const [{ loading, error, product, loadingCreateReview }, dispatch] =
+    useReducer(reducer, {
+      product: [],
+      loading: true,
+      error: '',
+    });
 
   usePageTitle(
     loading
@@ -84,38 +85,38 @@ function ProductScreen() {
     navigate('/cart');
   };
 
-   const submitHandler = async (e) => {
-     e.preventDefault();
-     if (!comment || !rating) {
-       toast.error('Please enter comment and rating');
-       return;
-     }
-     try {
-       const { data } = await axios.post(
-         `/api/products/${product._id}/reviews`,
-         { rating, comment, name: userInfo.name },
-         {
-           headers: { Authorization: `Bearer ${userInfo.token}` },
-         }
-       );
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (!comment || !rating) {
+      toast.error('Please enter comment and rating');
+      return;
+    }
+    try {
+      const { data } = await axios.post(
+        `/api/products/${product._id}/reviews`,
+        { rating, comment, name: userInfo.name },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
 
-       dispatch({
-         type: 'CREATE_SUCCESS',
-       });
-       toast.success('Review submitted successfully');
-       product.reviews.unshift(data.review);
-       product.numReviews = data.numReviews;
-       product.rating = data.rating;
-       dispatch({ type: 'REFRESH_PRODUCT', payload: product });
-       window.scrollTo({
-         behavior: 'smooth',
-         top: reviewsRef.current.offsetTop,
-       });
-     } catch (error) {
-       toast.error(getError(error));
-       dispatch({ type: 'CREATE_FAIL' });
-     }
-   };
+      dispatch({
+        type: 'CREATE_SUCCESS',
+      });
+      toast.success('Review submitted successfully');
+      product.reviews.unshift(data.review);
+      product.numReviews = data.numReviews;
+      product.rating = data.rating;
+      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
+      window.scrollTo({
+        behavior: 'smooth',
+        top: reviewsRef.current.offsetTop,
+      });
+    } catch (error) {
+      toast.error(getError(error));
+      dispatch({ type: 'CREATE_FAIL' });
+    }
+  };
 
   return (
     <>
@@ -254,7 +255,7 @@ function ProductScreen() {
               {userInfo ? (
                 <form onSubmit={submitHandler}>
                   <h2>Write a customer review</h2>
-                  <div className="mb-3" controlId="rating">
+                  <div className="mb-3">
                     <label>Rating</label>
                     <select
                       aria-label="Rating"
@@ -270,7 +271,6 @@ function ProductScreen() {
                     </select>
                   </div>
                   <label
-                    controlId="floatingTextarea"
                     label="Comments"
                     className="mb-3"
                   >

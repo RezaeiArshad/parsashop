@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Lobby from './sections/lobby/lobby';
 import Header from './sections/header/header';
 import ProductScreen from './sections/productscreen/productscreen';
@@ -22,8 +22,40 @@ import ProductEditScreen from './sections/adminscreens/productEditScreen';
 import OrderListScreen from './sections/adminscreens/orderListScreen';
 import UserListScreen from './sections/adminscreens/userListScreen';
 import UserEditScreen from './sections/adminscreens/userEditScreen';
+import { MessageToastContext } from './contexts/messageScreenContext';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 function App() {
+  const { messageToastDetails, setMessageToastDetails } = useContext(MessageToastContext);
+  const timeoutRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const clearTimer = () => {
+    if(timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }
+
+  useEffect(() => {
+     if (messageToastDetails[0] && !isHovered) {
+      clearTimer();
+      timeoutRef.current = setTimeout(() => {
+        setMessageToastDetails([false, ''])
+      }, 5000)
+     }
+
+     return () => clearTimer();
+  }, [messageToastDetails[0], isHovered, setMessageToastDetails]);
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+
+  const activate = () => {
+    setMessageToastDetails([true, '']);
+
+  }
+
   return (
     <div id="theme-div" className="overflow-x-hidden" dir="rtl">
       <link
@@ -121,6 +153,12 @@ function App() {
               />
             </Routes>
           </div>
+          {messageToastDetails[0] ? 
+          <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className='fixed bottom-0 w-[100vw] bg-high h-[10vh]'>
+           the message
+          </div> 
+          : 
+          <><button onClick={activate}>active error</button></>}
           <footer className="py-3 absolute bottom-0 right-0 left-0">
             <p className="text-center">all rights reserved</p>
           </footer>

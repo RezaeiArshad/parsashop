@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Store } from '../../store';
 import { getError } from '../../utils';
 import LoadingBox from '../../components/loadingbox';
-import MessageBox from '../../components/MessageBox';
+import MessageBox from '../../components/messageBox';
 import { usePageTitle } from '../../hooks/usepagetitle';
 
 const reducer = (state, action) => {
@@ -216,10 +216,7 @@ export default function ProductEditScreen() {
           </div>
           <div className="mb-3" controlId="additionalImageFile">
             <label>Upload Aditional Image</label>
-            <input
-              type="file"
-              onChange={(e) => uploadFileHandler(e, true)}
-            />
+            <input type="file" onChange={(e) => uploadFileHandler(e, true)} />
             {loadingUpload && <LoadingBox></LoadingBox>}
           </div>
           <div className="mb-3">

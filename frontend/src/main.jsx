@@ -8,17 +8,20 @@ import {
   SubsetContextProvider,
 } from './contexts/menucontext.jsx';
 import { SearchContextProvider } from './contexts/searchContext.jsx';
+import { MessageToastContextProvider } from './contexts/messageScreenContext.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <SearchContextProvider>
-    <SubsetContextProvider>
-      <CategoryContextProvider>
-        <MenuProvider>
-          <StoreProvider>
-            <App />
-          </StoreProvider>
-        </MenuProvider>
-      </CategoryContextProvider>
-    </SubsetContextProvider>
-  </SearchContextProvider>
+  <MessageToastContextProvider>
+    <SearchContextProvider>
+      <SubsetContextProvider>
+        <CategoryContextProvider>
+          <MenuProvider>
+            <StoreProvider>
+              <App />
+            </StoreProvider>
+          </MenuProvider>
+        </CategoryContextProvider>
+      </SubsetContextProvider>
+    </SearchContextProvider>
+  </MessageToastContextProvider>
 );
