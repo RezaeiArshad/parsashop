@@ -14,10 +14,9 @@ export default function MessageToast() {
   const startTimeRef = useRef(null);
   const pauseTimeRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [isExiting, setIsExiting] = useState(false); // tracks exit animation state
+  const [isExiting, setIsExiting] = useState(false);
   const remainingMotion = useMotionValue(5000);
 
-  // ✅ Get remaining time (safe)
   const getRemainingTime = () => {
     if (!startTimeRef.current) return 5000;
     let now = Date.now();
@@ -30,10 +29,9 @@ export default function MessageToast() {
     return Math.max(0, 5000 - elapsed);
   };
 
-  // ✅ Delayed hide (only resets context after exit)
   const delayedHideMessage = () => {
-    setIsExiting(true); // pause progress update
-    remainingMotion.set(0); // ensure progress bar is at 0%
+    setIsExiting(true);
+    remainingMotion.set(0);
     setTimeout(() => {
       setMessageToastDetails([false, '']);
       startTimeRef.current = null;
@@ -42,7 +40,6 @@ export default function MessageToast() {
     }, 300);
   };
 
-  // ✅ Timer control
   const scheduleHide = (delayMs) => {
     clearTimer();
     timeoutRef.current = setTimeout(delayedHideMessage, delayMs);
@@ -55,7 +52,6 @@ export default function MessageToast() {
     }
   };
 
-  // ✅ Timer logic (start/pause/resume)
   useEffect(() => {
     if (!messageToastDetails[0]) {
       clearTimer();
@@ -87,7 +83,6 @@ export default function MessageToast() {
     return () => clearTimer();
   }, [messageToastDetails[0], isHovered]);
 
-  // ✅ Update remaining time while active (not exiting)
   useEffect(() => {
     if (!messageToastDetails[0] || isExiting) return;
 
