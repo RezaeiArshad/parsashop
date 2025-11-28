@@ -32,6 +32,22 @@ function reducer(state, action) {
     case 'PAY_RESET': {
       return { ...state, loadingPay: false, successPay: false };
     }
+    case 'DELIVER_REQUEST': {
+      return { ...state, loadingDeliver: true };      
+    }
+    case 'DELIVER_SUCCESS': {
+      return { ...state, loadingDeliver: false, successDeliver: true };      
+    }
+    case 'DELIVER_FAIL': {
+      return { ...state, loadingDeliver: false };      
+    }
+    case 'DELIVER_RESET': {
+      return {
+        ...state,
+        loadingDeliver: false,
+        successDeliver: false,
+      };      
+    }
     default: {
       return state;
     }
@@ -47,7 +63,7 @@ export default function OrderScreen() {
   const { id: orderId } = params;
 
   const [
-    { loading, error, order, successPay, loadingPay, isPending },
+    { loading, error, order, successPay, loadingPay, isPending, loadingDeliver, successDeliver },
     dispatch,
   ] = useReducer(reducer, {
     loading: true,
@@ -73,13 +89,34 @@ export default function OrderScreen() {
     if (!userInfo) {
       return navigate('/login');
     }
-    if (!order._id || successPay || (order._id && order._id !== orderId)) {
+    if (!order._id || successPay || successDeliver || (order._id && order._id !== orderId)) {
       fetchOrder();
       if (successPay) {
         dispatch({ type: 'PAY_RESET' });
       }
+      if (successDeliver) {
+        dispatch({ type: 'DELIVER_RESET' })
+      }
     }
-  }, [order, userInfo, orderId, navigate, successPay]);
+  }, [order, userInfo, orderId, navigate, successPay, successDeliver]);
+
+    async function deliverOrderHandler() {
+      try {
+        dispatch({ type: 'DELIVER_REQUEST' });
+        const { data } = await axios.put(
+          `/api/orders/${order._id}/deliver`,
+          {},
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        dispatch({ type: 'DELIVER_SUCCESS', payload: data });
+        toast.success('Order is delivered');
+      } catch (err) {
+        toast.error(getError(err));
+        dispatch({ type: 'DELIVER_FAIL' });
+      }
+    }
 
   const orderSuccess = async (
     details = 'this has to be filled with payment info'
@@ -112,7 +149,7 @@ export default function OrderScreen() {
         <div className="w-[80%] mx-auto mt-4">
           {' '}
           <h1 className="text-4xl">Order {orderId}</h1>
-          <div className="flex pt-4  gap-3">
+          <div className="flex pt-4 gap-3">
             <div className="w-[60%]">
               <div className="border-fg2 border-1 rounded-xl p-5">
                 <h1 className="font-bold text-xl">Shipping</h1>
@@ -130,7 +167,7 @@ export default function OrderScreen() {
                   </span>
                 </h1>
                 {order.isDelivered ? (
-                  <MessageBox>Delivered at {order.deliveredAt}</MessageBox>
+                  <MessageBox isSuccess={true} >Delivered at {order.deliveredAt}</MessageBox>
                 ) : (
                   <MessageBox>Not Delivered </MessageBox>
                 )}
@@ -220,6 +257,14 @@ export default function OrderScreen() {
                   </div>
                 ))}
             </div>
+            {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+              <div>
+                {loadingDeliver && <LoadingBox></LoadingBox>}
+                <div className="d-grid">
+                  <button onClick={deliverOrderHandler}>Deliver Order</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

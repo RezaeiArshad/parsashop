@@ -19,6 +19,9 @@ import DashBoardScreen from './sections/adminscreens/dashBoardScreen';
 import AdminRoute from './components/adminRoute';
 import ProductListScreen from './sections/adminscreens/productListScreen';
 import ProductEditScreen from './sections/adminscreens/productEditScreen';
+import OrderListScreen from './sections/adminscreens/orderListScreen';
+import UserListScreen from './sections/adminscreens/userListScreen';
+import UserEditScreen from './sections/adminscreens/userEditScreen';
 
 function App() {
   return (
@@ -89,6 +92,30 @@ function App() {
                 element={
                   <AdminRoute>
                     <ProductListScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/orders"
+                element={
+                  <AdminRoute>
+                    <OrderListScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <AdminRoute>
+                    <UserListScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/user/:id"
+                element={
+                  <AdminRoute>
+                    <UserEditScreen />
                   </AdminRoute>
                 }
               />

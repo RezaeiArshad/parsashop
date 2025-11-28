@@ -22,6 +22,16 @@ const reducer = (state, action) => {
       return { ...state, loadingUpdate: false };
     case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_SUCCESS':
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: '',
+      };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     default:
       return state;
   }
@@ -34,15 +44,17 @@ export default function ProductEditScreen() {
 
   const { state } = useContext(Store);
   const { userInfo } = state;
-  const [{ loading, error, loadingUpdate }, dispatch] = useReducer(reducer, {
-    loading: true,
-    error: '',
-  });
+  const [{ loading, error, loadingUpload, loadingUpdate }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: '',
+    });
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState('');
+  const [images, setImages] = useState([]);
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState('');
   const [brand, setBrand] = useState('');
@@ -57,6 +69,7 @@ export default function ProductEditScreen() {
         setSlug(data.slug);
         setPrice(data.price);
         setImage(data.image);
+        setImages(data.images);
         setCategory(data.category);
         setCountInStock(data.countInStock);
         setBrand(data.brand);
@@ -86,6 +99,7 @@ export default function ProductEditScreen() {
           slug,
           price,
           image,
+          images,
           category,
           brand,
           countInStock,
@@ -104,6 +118,40 @@ export default function ProductEditScreen() {
       toast.error(getError(err));
       dispatch({ type: 'UPDATE_FAIL' });
     }
+  };
+
+  const uploadFileHandler = async (e, forImages) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+
+      if (forImages) {
+        setImages([...images, data.secure_url]);
+      } else {
+        setImage(data.secure_url);
+      }
+      toast.success('Image uploaded successfully. click Update to apply it');
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
+
+  const deleteFileHandler = async (fileName, f) => {
+    console.log(fileName, f);
+    console.log(images);
+    console.log(images.filter((x) => x !== fileName));
+    setImages(images.filter((x) => x !== fileName));
+    toast.success('Image removed successfully. click Update to apply it');
   };
 
   return (
@@ -148,6 +196,33 @@ export default function ProductEditScreen() {
             />
           </div>
           <div className="mb-3">
+            <label>Upload Images</label>
+            <input type="file" onChange={uploadFileHandler} />
+            {loadingUpload && <LoadingBox></LoadingBox>}
+          </div>
+          <div className="mb-3" controlId="additionalImage">
+            <label>Additional Images</label>
+            {images.length === 0 && <MessageBox>No image</MessageBox>}
+            <div variant="flush">
+              {images.map((x) => (
+                <div key={x}>
+                  {x}
+                  <button variant="light" onClick={() => deleteFileHandler(x)}>
+                    <i className="fa fa-times-circle"></i>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mb-3" controlId="additionalImageFile">
+            <label>Upload Aditional Image</label>
+            <input
+              type="file"
+              onChange={(e) => uploadFileHandler(e, true)}
+            />
+            {loadingUpload && <LoadingBox></LoadingBox>}
+          </div>
+          <div className="mb-3">
             <label>Category</label>
             <input
               value={category}
@@ -180,7 +255,9 @@ export default function ProductEditScreen() {
             />
           </div>
           <div className="mb-3">
-            <button disabled={loadingUpdate} type="submit">Update</button>
+            <button disabled={loadingUpdate} type="submit">
+              Update
+            </button>
             {loadingUpdate && <LoadingBox></LoadingBox>}
           </div>
         </form>
