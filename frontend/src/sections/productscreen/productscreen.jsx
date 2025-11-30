@@ -10,6 +10,7 @@ import { motion } from 'motion/react';
 import { getError } from '../../utils';
 import { Store } from '../../store';
 import PriceComma from '../../hooks/pricecomma';
+import { MessageToastContext } from '../../contexts/messageScreenContext';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -33,6 +34,7 @@ const reducer = (state, action) => {
 };
 
 function ProductScreen() {
+  const { setMessageToastDetails } = useContext(MessageToastContext);
   let reviewsRef = useRef();
 
   const [rating, setRating] = useState(0);
@@ -88,7 +90,7 @@ function ProductScreen() {
   const submitHandler = async (e) => {
     e.preventDefault();
     if (!comment || !rating) {
-      toast.error('Please enter comment and rating');
+      setMessageToastDetails([true, false, 'لطفا یک نظر و امتیاز وارد کنید']);
       return;
     }
     try {

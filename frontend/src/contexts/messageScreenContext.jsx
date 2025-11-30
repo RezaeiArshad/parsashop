@@ -3,7 +3,7 @@
 import { createContext, useState } from 'react';
 
 export const MessageToastContext = createContext({
-  messageToastDetails: [false, ''],
+  messageToastDetails: [false, false, ''],
   setMessageToastDetails: () => {},
 });
 
