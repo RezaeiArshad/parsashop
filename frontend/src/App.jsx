@@ -31,7 +31,7 @@ function App() {
         href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
       />
-      <div className="text-fg bg-bg dark:bg-bg-d dark:text-fg-d relative pb-15 transition-colors duration-300">
+      <div className="text-fg bg-bg dark:bg-bg-d dark:text-fg-d relative pb-15 transition-colors duration-300 pt-[8vh]">
         <BrowserRouter>
           <ToastContainer position="bottom-center" limit={1} />
           <Header />

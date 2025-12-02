@@ -5,12 +5,15 @@ import { Store } from '../../store';
 import HeaderMenuButton from './headermenubutton';
 import HeaderMenu from './headermenu';
 import SearchBox from '../../components/searchbox';
+import { cartSvg } from './headerSvg';
+import { motion } from 'motion/react';
 
 export default function Header() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
   const [showMenu, setShowMenu] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [cartState, setCartState] = useState('inactive');
 
   const signoutHandler = () => {
     ctxDispatch({ type: 'USER_SIGNOUT' });
@@ -22,7 +25,13 @@ export default function Header() {
 
   return (
     <>
-      <div className="flex justify-evenly h-[8vh] bg-fg2 relative">
+      <div
+        style={{
+          backdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+        className="flex justify-evenly h-[8vh] border border-b-1 border-b-high fixed w-[100%] top-0"
+      >
         <HeaderMenuButton />
         <SearchBox />
         <ThemeButton />
@@ -124,19 +133,56 @@ export default function Header() {
             )}
           </div>
         )}
-        <Link className="flex-center bg-blue-400" to="/">
-          parsashop
+        <Link
+          id="spiky-tech-header"
+          className="font-medium flex-center font-cursive text-fg text-2xl duration-300 hover:text-high hover:scale-105 transition-all h-fit my-auto"
+          to="/"
+        >
+          SpikyTech
         </Link>
-        <div className="flex-center">
-          <Link to="/cart" className="nav-link flex-center gap-1.5">
-            Cart
+        <motion.div
+          className="flex-center w-14"
+          onMouseEnter={() => setCartState('hovered')}
+          onMouseLeave={() => setCartState('inactive')}
+        >
+          <Link to="/cart" className="nav-link flex-center gap-1.5 ms-auto">
             {cart.cartItems.length > 0 && (
-              <div className="bg-red-500 p-1 rounded-full text-fg text-center">
+              <motion.div
+                animate={cartState}
+                variants={{
+                  inactive: {
+                    background: 'rgb(255, 0, 0)',
+                  },
+                  hovered: {
+                    background: 'var(--high)',
+                  },
+                }}
+                transition={{ duration: 0.3 }}
+                className="p-1.5 rounded-full text-fg text-center"
+              >
                 {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
-              </div>
+              </motion.div>
             )}
+            <motion.h1
+              animate={cartState}
+              variants={{
+                inactive: {
+                  opacity: 1.03,
+                  fill: 'var(--fg)',
+                  color: 'var(--fg)',
+                },
+                hovered: {
+                  opacity: 1.03,
+                  fill: 'var(--high)',
+                  color: 'var(--high)',
+                },
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {cartSvg}
+            </motion.h1>
           </Link>
-        </div>
+        </motion.div>
         <HeaderMenu />
       </div>
     </>

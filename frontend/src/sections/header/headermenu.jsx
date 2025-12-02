@@ -29,35 +29,34 @@ export default function HeaderMenu() {
   };
 
   const menuClosed = () => {
-          setCategory('ماژول');
-          setSubsetCategory('کاهنده');          
-          updateStatus('inactive');    
-  }
+    setCategory('ماژول');
+    setSubsetCategory('کاهنده');
+    updateStatus('inactive');
+  };
 
   return (
     <>
-      <motion.div
-        className="h-[100vh] w-[100vw] bg-black absolute left-0 top-0"
-        style={{ zIndex: isVisuallyOpen ? 3 : -3 }}
-        initial={{ opacity: 0 }}
-        animate={
-          status === 'clicked' || status === 'clickedHovered'
-            ? { opacity: 0.2 }
-            : { opacity: 0 }
-        }
-        transition={{
-          opacity: { duration: 0.2 },
-        }}
-        onAnimationComplete={() => {
-          if (!isOpen) {
-            setIsVisuallyOpen(false);
-          }
-        }}
-        onClick={() => menuClosed()}
-      ></motion.div>
       <AnimatePresence>
         {isOpen && (
           <>
+            <motion.div
+              key='background-black-div'
+              className="h-[100vh] w-[100vw] bg-black absolute left-0 top-0"
+              initial={{ opacity: 0 }}
+              animate={
+                status === 'clicked' || status === 'clickedHovered'
+                  ? { opacity: 0.2 }
+                  : { opacity: 0 }
+              }
+              exit={{opacity: 0}}
+              transition={{ duration: 0.3 }}
+              onAnimationComplete={() => {
+                if (!isOpen) {
+                  setIsVisuallyOpen(false);
+                }
+              }}
+              onClick={() => menuClosed()}
+            ></motion.div>
             <motion.div
               key={'menu'}
               className="h-fit pb-5 lg:w-[25vw] md:w-[20vw] bg-bg absolute right-0 rounded-b-md"
@@ -87,7 +86,9 @@ export default function HeaderMenu() {
                   >
                     <motion.h1
                       initial="inactive"
-                      animate={category === categoryName ? 'active' : 'inactive'}
+                      animate={
+                        category === categoryName ? 'active' : 'inactive'
+                      }
                       whileHover="active"
                       transition={{ duration: 0.2 }}
                       className="border-b-1 border-b-fg2 p-1 flex items-center gap-2"
@@ -113,7 +114,7 @@ export default function HeaderMenu() {
                 ))}
               </div>
             </motion.div>
-              <FilterTree />              
+            <FilterTree />
           </>
         )}
       </AnimatePresence>
