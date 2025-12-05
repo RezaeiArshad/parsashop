@@ -59,7 +59,7 @@ export default function HeaderMenu() {
             ></motion.div>
             <motion.div
               key={'menu'}
-              className="h-fit pb-5 lg:w-[25vw] md:w-[20vw] bg-bg absolute right-0 rounded-b-md"
+              className="h-fit pb-5 lg:w-[25vw] md:w-[20vw] bg-bg absolute right-0 top-0 rounded-b-md"
               style={{ zIndex: isVisuallyOpen ? 4 : -3 }}
               initial={{ opacity: 0, x: 300 }}
               animate={{ opacity: 0.98, x: 0 }}

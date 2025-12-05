@@ -140,7 +140,12 @@ export default function MessageToast() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
               transition={{ duration: 0.3 }}
-              className="w-80 rounded-b-xl overflow-hidden rounded-t-md absolute bottom-[12vh] left-1/2 -translate-x-1/2 h-27 bg-bg border border-fg2"
+              className="w-80 rounded-b-xl overflow-hidden rounded-t-md absolute bottom-[12vh] left-1/2 -translate-x-1/2 h-27"
+              style={{
+                backdropFilter: 'blur(10px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 0 6px rgba(0,0,0,0.08)',
+              }}
             >
               <motion.button
                 initial={{ fill: 'var(--fg2)', scale: 1 }}
@@ -167,8 +172,7 @@ export default function MessageToast() {
             </motion.div>
           </motion.div>
         ) : (
-          <>
-          </>
+          <></>
         )}
       </AnimatePresence>
     </>
