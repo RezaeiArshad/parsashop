@@ -8,7 +8,7 @@ export const MessageToastContext = createContext({
 });
 
 export const MessageToastContextProvider = ({ children }) => {
-  const [messageToastDetails, setMessageToastDetails] = useState([false, '']);
+  const [messageToastDetails, setMessageToastDetails] = useState([false,false , '']);
   return (
     <MessageToastContext.Provider value={{ messageToastDetails, setMessageToastDetails }}>
       {children}

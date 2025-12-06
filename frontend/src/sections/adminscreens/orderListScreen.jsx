@@ -7,6 +7,7 @@ import MessageBox from '../../components/messagebox';
 import { Store } from '../../store';
 import { getError } from '../../utils';
 import { usePageTitle } from '../../hooks/usepagetitle';
+import { motion } from 'motion/react';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -38,111 +39,156 @@ const reducer = (state, action) => {
 };
 
 export default function OrderListScreen() {
-      const navigate = useNavigate();
-      const { state } = useContext(Store);
-      const { userInfo } = state;
-      const [{ loading, error, orders, loadingDelete, successDelete }, dispatch] = useReducer(reducer, {
-        loading: true,
-        error: '',
-      });
+  const navigate = useNavigate();
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const [{ loading, error, orders, loadingDelete, successDelete }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: '',
+    });
 
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            dispatch({ type: 'FETCH_REQUEST' });
-            const { data } = await axios.get(`/api/orders`, {
-              headers: { Authorization: `Bearer ${userInfo.token}` },
-            });
-            dispatch({ type: 'FETCH_SUCCESS', payload: data });
-          } catch (err) {
-            dispatch({
-              type: 'FETCH_FAIL',
-              payload: getError(err),
-            });
-          }
-        };
-        if (successDelete) {
-          dispatch({ type: 'DELETE_RESET' });
-        } else {
-          fetchData();
-        }
-      }, [userInfo, successDelete]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        dispatch({ type: 'FETCH_REQUEST' });
+        const { data } = await axios.get(`/api/orders`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+      } catch (err) {
+        dispatch({
+          type: 'FETCH_FAIL',
+          payload: getError(err),
+        });
+      }
+    };
+    if (successDelete) {
+      dispatch({ type: 'DELETE_RESET' });
+    } else {
+      fetchData();
+    }
+  }, [userInfo, successDelete]);
 
-      const deleteHandler = async (order) => {
-        if (window.confirm('Are you sure to delete?')) {
-          try {
-            dispatch({ type: 'DELETE_REQUEST' });
-            await axios.delete(`/api/orders/${order._id}`, {
-              headers: { Authorization: `Bearer ${userInfo.token}` },
-            });
-            toast.success('order deleted successfully');
-            dispatch({ type: 'DELETE_SUCCESS' });
-          } catch (err) {
-            toast.error(getError(err));
-            dispatch({
-              type: 'DELETE_FAIL',
-            });
-          }
-        }
-      };
+  const deleteHandler = async (order) => {
+    if (window.confirm('Are you sure to delete?')) {
+      try {
+        dispatch({ type: 'DELETE_REQUEST' });
+        await axios.delete(`/api/orders/${order._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        toast.success('order deleted successfully');
+        dispatch({ type: 'DELETE_SUCCESS' });
+      } catch (err) {
+        toast.error(getError(err));
+        dispatch({
+          type: 'DELETE_FAIL',
+        });
+      }
+    }
+  };
 
+  const formatDate = (iso) => (iso ? iso.substring(0, 10) : '—');
+  const shortId = (id) => (id ? `${id.substring(0, 8)}...` : '—');
+  const formatCurrency = (num) =>
+    typeof num === 'number' ? num.toLocaleString() : num ?? '—';
 
-    usePageTitle('Orders')
+  usePageTitle('Orders');
   return (
     <>
-      <div>
-        <h1>Orders</h1>
+      <div className="w-[90%] ms-[5%] mt-[2vh]">
+        <div className="flex items-center justify-between">
+          <h1 className="text-4xl">سفارش‌ها</h1>
+          <span className="text-sm text-gray-600">
+            {orders?.length ?? 0} سفارش
+          </span>
+        </div>
+
         {loadingDelete && <LoadingBox></LoadingBox>}
+
         {loading ? (
-          <LoadingBox></LoadingBox>
+          <LoadingBox />
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>USER</th>
-                <th>DATE</th>
-                <th>TOTAL</th>
-                <th>PAID</th>
-                <th>DELIVERED</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order.user ? order.user.name : 'DELETED USER'}</td>
-                  <td>{order.createdAt.substring(0, 10)}</td>
-                  <td>{order.totalPrice.toFixed(2)}</td>
-                  <td>{order.isPaid ? order.paidAt.substring(0, 10) : 'No'}</td>
-                  <td>
-                    {order.isDelivered
-                      ? order.deliveredAt.substring(0, 10)
-                      : 'No'}
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        navigate(`/order/${order._id}`);
-                      }}
-                    >
-                      Details
-                    </button>
-                    <button
-                      type="button"
-                      variant="light"
-                      onClick={() => deleteHandler(order)}
-                    >
-                      Delete
-                    </button>
-                  </td>
+          <div className="mt-4 overflow-x-hidden">
+            <table className="min-w-full bg-white rounded">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2 text-right text-sm">جزئیات</th>
+                  <th className="px-4 py-2 text-right text-sm">کاربر</th>
+                  <th className="px-4 py-2 text-right text-sm">تاریخ</th>
+                  <th className="px-4 py-2 text-right text-sm">مجموع</th>
+                  <th className="px-4 py-2 text-right text-sm">پرداخت شده</th>
+                  <th className="px-4 py-2 text-right text-sm">
+                    تحویل داده شده
+                  </th>
+                  <th className="px-4 py-2 text-right text-sm">عملیات</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <motion.tr
+                    key={order._id}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.01 }}
+                    className="border-b last:border-none"
+                  >
+                    <td className="px-4 py-3 text-sm">{shortId(order._id)}</td>
+                    <td className="px-4 py-3 text-sm">
+                      {order.user ? order.user.name : 'DELETED USER'}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {formatDate(order.createdAt)}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {formatCurrency(order.totalPrice)} تومان
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {order.isPaid ? (
+                        <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
+                          Paid {formatDate(order.paidAt)}
+                        </span>
+                      ) : (
+                        <span className="inline-block px-2 py-1 text-xs bg-red-100 text-red-800 rounded">
+                          Not Paid
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {order.isDelivered ? (
+                        <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
+                          Delivered {formatDate(order.deliveredAt)}
+                        </span>
+                      ) : (
+                        <span className="inline-block px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">
+                          در انتظار تحویل
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => navigate(`/order/${order._id}`)}
+                          className="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 rounded"
+                        >
+                          مشاهده
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteHandler(order)}
+                          className="px-3 py-1 text-sm bg-red-50 hover:bg-red-100 text-red-600 rounded"
+                        >
+                          حذف
+                        </button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </>

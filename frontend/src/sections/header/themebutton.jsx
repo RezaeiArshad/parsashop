@@ -23,8 +23,16 @@ function ThemeButton() {
               <motion.svg
                 key="sun"
                 initial={{ rotate: -180, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1, transition: { duration: 0.25 } }}
-                exit={{ rotate: 180, opacity: 0, transition: { duration: 0.2 } }}
+                animate={{
+                  rotate: 0,
+                  opacity: 1,
+                  transition: { duration: 0.25 },
+                }}
+                exit={{
+                  rotate: 180,
+                  opacity: 0,
+                  transition: { duration: 0.2 },
+                }}
                 style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -51,8 +59,16 @@ function ThemeButton() {
               <motion.svg
                 key="moon"
                 initial={{ rotate: -180, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1, transition: { duration: 0.25 } }}
-                exit={{ rotate: 180, opacity: 0, transition: { duration: 0.2 } }}
+                animate={{
+                  rotate: 0,
+                  opacity: 1,
+                  transition: { duration: 0.25 },
+                }}
+                exit={{
+                  rotate: 180,
+                  opacity: 0,
+                  transition: { duration: 0.2 },
+                }}
                 style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

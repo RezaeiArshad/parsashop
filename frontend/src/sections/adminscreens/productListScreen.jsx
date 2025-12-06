@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import LoadingBox from '../../components/loadingbox';
 import MessageBox from '../../components/messagebox';
 import { getError } from '../../utils';
+import { plusSignSvg } from './adminSvg';
+import { motion } from 'motion/react';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -134,9 +136,17 @@ export default function ProductListScreen() {
   };
 
   return (
-    <div>
-      <h1>Products</h1>
-      <button onClick={createHandler}>یک محصول اضافه کنید</button>
+    <div className="w-[90%] ms-[5%] mt-[2vh]">
+      <h1 className="text-4xl">محصولات</h1>
+      <motion.button
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="flex-center font-medium gap-1 mt-2 cursor-pointer bg-high text-bg px-3 py-2 rounded-md"
+        onClick={createHandler}
+      >
+        یک محصول اضافه کنید<span>{plusSignSvg}</span>
+      </motion.button>
       {loadingCreate && <LoadingBox></LoadingBox>}
       {loadingDelete && <LoadingBox></LoadingBox>}
       {loading ? (
@@ -145,45 +155,101 @@ export default function ProductListScreen() {
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>NAME</th>
-                <th>PRICE</th>
-                <th>CATEGORY</th>
-                <th>BRAND</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product._id}>
-                  <td>{product._id}</td>
-                  <td>{product.name}</td>
-                  <td>{product.price}</td>
-                  <td>{product.category}</td>
-                  <td>{product.brand}</td>
-                  <td>
-                    <button
-                      onClick={() => navigate(`/admin/product/${product._id}`)}
-                    >
-                      ویرایش
-                    </button>
-                    <button
-                      onClick={() => deleteHandler(product)}
-                    >
-                      حذف
-                    </button>
-                  </td>
+          <div className="overflow-x-hidden mt-4">
+            <table className="table w-full border-collapse">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 py-2 text-right">تصویر</th>
+                  <th className="px-3 py-2 text-right">نام و جزئیات</th>
+                  <th className="px-3 py-2 text-right">قیمت</th>
+                  <th className="px-3 py-2 text-right">دسته‌بندی</th>
+                  <th className="px-3 py-2 text-right">برند</th>
+                  <th className="px-3 py-2 text-right">عملیات</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div>
+              </thead>
+              <tbody>
+                {products.map((product) => (
+                  <motion.tr
+                    key={product._id}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.01 }}
+                    className="border-b last:border-none"
+                  >
+                    <td className="px-3 py-3 align-middle">
+                      <img
+                        src={
+                          product.image ||
+                          product.images?.[0] ||
+                          '/images/placeholder.png'
+                        }
+                        alt={product.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                    </td>
+                    <td className="px-3 py-3 align-middle">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-sm truncate max-w-[320px]">
+                          {product.name}
+                        </span>
+                        <span className="text-xs text-gray-500 truncate max-w-[320px] mt-1">
+                          {product.description || '—'}
+                        </span>
+                        <span className="text-xs text-gray-400 mt-1">
+                          id: <span className="text-muted">{product._id}</span>
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 align-middle">
+                      <span className="font-medium">
+                        {product.price?.toLocaleString?.() ?? product.price}{' '}
+                        تومان
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 align-middle">
+                      <span className="text-sm text-gray-600">
+                        {product.category}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 align-middle">
+                      <span className="text-sm text-gray-600">
+                        {product.brand}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 align-middle">
+                      <div className="flex items-center gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-sm"
+                          onClick={() =>
+                            navigate(`/admin/product/${product._id}`)
+                          }
+                        >
+                          ویرایش
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          className="px-2 py-1 bg-red-50 hover:bg-red-100 rounded text-sm text-red-600"
+                          onClick={() => deleteHandler(product)}
+                        >
+                          حذف
+                        </motion.button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-4 flex gap-2 items-center">
             {[...Array(pages).keys()].map((x) => (
               <Link
-                className={x + 1 === Number(page) ? 'btn text-bold' : 'btn'}
+                className={
+                  x + 1 === Number(page)
+                    ? 'btn text-bold bg-high text-bg px-3 py-1 rounded'
+                    : 'btn px-3 py-1 rounded border'
+                }
                 key={x + 1}
                 to={`/admin/products?page=${x + 1}`}
               >

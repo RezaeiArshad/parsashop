@@ -9,19 +9,22 @@ import {
 } from './contexts/menucontext.jsx';
 import { SearchContextProvider } from './contexts/searchContext.jsx';
 import { MessageToastContextProvider } from './contexts/messageScreenContext.jsx';
+import { ConfirmBoxContextProvider } from './contexts/confirmBoxContext.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <MessageToastContextProvider>
-    <SearchContextProvider>
-      <SubsetContextProvider>
-        <CategoryContextProvider>
-          <MenuProvider>
-            <StoreProvider>
-              <App />
-            </StoreProvider>
-          </MenuProvider>
-        </CategoryContextProvider>
-      </SubsetContextProvider>
-    </SearchContextProvider>
-  </MessageToastContextProvider>
+  <ConfirmBoxContextProvider>
+    <MessageToastContextProvider>
+      <SearchContextProvider>
+        <SubsetContextProvider>
+          <CategoryContextProvider>
+            <MenuProvider>
+              <StoreProvider>
+                <App />
+              </StoreProvider>
+            </MenuProvider>
+          </CategoryContextProvider>
+        </SubsetContextProvider>
+      </SearchContextProvider>
+    </MessageToastContextProvider>
+  </ConfirmBoxContextProvider>
 );

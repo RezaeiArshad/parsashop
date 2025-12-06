@@ -55,7 +55,7 @@ export default function Header() {
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
           boxShadow: '0 4px 6px rgba(0,0,0,0.08)',
         }}
-        className="flex h-[8vh] fixed w-[100%] top-0"
+        className="flex h-[10vh] fixed w-[100%] top-0"
       >
         <div className="flex items-center w-[40%] ms-[3%] justify-evenly">
           <HeaderMenuButton />
@@ -94,6 +94,8 @@ export default function Header() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
+                    onMouseEnter={userMouseEnter}
+                    onMouseLeave={userMouseLeave}
                     className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg py-2 z-10"
                   >
                     <Link
@@ -128,9 +130,10 @@ export default function Header() {
             </motion.div>
           ) : (
             <Link className="flex-center" to="/signin">
-              Sign In
+              ورود
             </Link>
           )}
+
           {userInfo && userInfo.isAdmin && (
             <motion.div
               className="relative cursor-pointer"
@@ -139,7 +142,7 @@ export default function Header() {
             >
               <button
                 onClick={() => setShowAdmin(!showAdmin)}
-                className="flex-center font-medium gap-0.5 focus:outline-none"
+                className="flex-center cursor-pointer font-medium gap-0.5 focus:outline-none"
               >
                 ادمین
                 <motion.svg
@@ -162,6 +165,8 @@ export default function Header() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
+                    onMouseEnter={adminMouseEnter}
+                    onMouseLeave={adminMouseLeave}
                     className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg py-2 z-10"
                   >
                     <Link
@@ -186,14 +191,6 @@ export default function Header() {
                       onClick={() => setShowAdmin(false)}
                     >
                       سفارش‌ها
-                    </Link>
-                    <div className="h-[1.5px] w-[80%] mb-1 mx-auto bg-fg2"></div>
-                    <Link
-                      to="/admin/users"
-                      className="block px-4 py-2 text-sm hover:bg-gray-100"
-                      onClick={() => setShowAdmin(false)}
-                    >
-                      کاربران
                     </Link>
                   </motion.div>
                 )}
