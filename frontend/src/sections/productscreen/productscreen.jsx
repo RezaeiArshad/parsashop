@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import Rating from '../../components/rating';
 import { usePageTitle } from '../../hooks/usepagetitle';
 import LoadingBox from '../../components/loadingbox';
-import MessageBox from '../../components/messageBox';
+import MessageBox from '../../components/messagebox';
 import { motion } from 'motion/react';
 import { getError } from '../../utils';
 import { Store } from '../../store';
@@ -73,6 +73,13 @@ function ProductScreen() {
     fetchData();
   }, [slug]);
 
+  // keep selected image in sync when product loads
+  useEffect(() => {
+    if (product && product.image) {
+      setSelectedImage(product.image);
+    }
+  }, [product]);
+
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
   const addToCartHandler = async () => {
@@ -105,7 +112,7 @@ function ProductScreen() {
       dispatch({
         type: 'CREATE_SUCCESS',
       });
-      toast.success('Review submitted successfully');
+      toast.success('نظر با موفقیت ثبت شد');
       product.reviews.unshift(data.review);
       product.numReviews = data.numReviews;
       product.rating = data.rating;
@@ -114,11 +121,18 @@ function ProductScreen() {
         behavior: 'smooth',
         top: reviewsRef.current.offsetTop,
       });
+      setComment('');
+      setRating(0);
     } catch (error) {
       toast.error(getError(error));
       dispatch({ type: 'CREATE_FAIL' });
     }
   };
+
+  // thumbnails derived safely
+  const thumbnails = product
+    ? [product.image, ...(product.images || [])].filter(Boolean)
+    : [];
 
   return (
     <>
@@ -128,176 +142,193 @@ function ProductScreen() {
         <MessageBox>{error}</MessageBox>
       ) : (
         <>
-          <div className="w-[100%] ms-auto me-auto pt-5 md:flex md:px-3 md:gap-2 lg:w-[80%]">
-            <img
-              className="product-screen-product-image bg-red-400 
-            w-100
-            sm:w-90
-            "
-              src={selectedImage || product.image}
-              alt={product.name}
-            />
-            <div
-              className="product-details
-            mt-3 px-2
-            "
-            >
-              <h1
-                className="
-              mt-10 text-3xl
-            "
-              >
-                {product.name}
-              </h1>
-              <Rating rating={product.rating} numReviews={product.numReviews} />
-              <div>
-                <div xs={1} md={2} className="g-2">
-                  {[product.image, ...product.images].map((x) => (
-                    <div key={x}>
-                      <div>
-                        <button
-                          className="thumbnail"
-                          type="button"
-                          variant="light"
-                          onClick={() => setSelectedImage(x)}
-                        >
-                          <img variant="top" src={x} alt="product" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* this part is for phone sized screens*/}
-              {product.countInStock ? (
-                <div className="right-0 left-0 bottom-0 fixed h-[10vh] border-t-2 border-solid p-2 flex justify-between align-center md:hidden">
-                  <h1 className="text-xl font-medium mt-[2%]">
-                    <PriceComma value={product.price} /> Toman
-                  </h1>
-                  <motion.button
-                    initial={{ backgroundColor: '#16A34A' }}
-                    whileHover={{ backgroundColor: '#DC2626' }}
-                    whileTap={{ backgroundColor: '#FF0000' }}
-                    transition={{ duration: 0.2 }}
-                    onClick={addToCartHandler}
-                    className="mt-2 mb-auto p-3 h-[65%] rounded-xl flex-center"
+          <div className="w-[90%] ms-[5%] mt-[2vh] md:flex md:gap-6 lg:w-[80%]">
+            <div className="flex-1">
+              <img
+                className="w-full max-h-[540px] object-contain rounded bg-gray-50"
+                src={selectedImage || product.image}
+                alt={product.name}
+              />
+              <div className="mt-3 flex gap-2 overflow-auto">
+                {thumbnails.map((x) => (
+                  <button
+                    key={x}
+                    type="button"
+                    className={`border rounded p-1 bg-white ${
+                      selectedImage === x ? 'ring-2 ring-high' : ''
+                    }`}
+                    onClick={() => setSelectedImage(x)}
                   >
-                    add to cart
-                  </motion.button>
-                  <button> amount</button>
-                </div>
-              ) : (
-                <div className="right-0 left-0 bottom-0 fixed h-[10vh] border-t-2 border-solid p-2 flex justify-between align-center md:hidden">
-                  <h1>not availible</h1>
-                </div>
-              )}
-              {/*until here*/}
-
-              <div className="flex gap-1.5 ms-[10%] w-[80%] align-center md:my-3 md:w-[90%] md:ms-[5%]">
-                <span className="h-[1px] w-[100%] bg-[#C0C0C0] mt-auto mb-auto"></span>
-                <h1 className="md:hidden">{product.brand}</h1>
+                    <img
+                      src={x}
+                      alt="thumb"
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  </button>
+                ))}
               </div>
-              <h1 className="text-fg2">
-                Count In Stock {product.countInStock}
-              </h1>
-              <h1>{product.description}</h1>
             </div>
 
-            {/* this one is for tablet sized screens or bigger*/}
-            <div className="hidden md:block p-4 border-1 border-fg2 flex-1 rounded-2xl">
-              {product.countInStock ? (
-                <>
-                  <div className="flex justify-between">
-                    <h1 className="font-medium text-xl mt-[-3px]">seller</h1>
-                    <h1>{product.brand}</h1>
+            <div className="flex-1 mt-4 md:mt-0">
+              <h1 className="text-2xl font-semibold">{product.name}</h1>
+              <div className="mt-2">
+                <Rating
+                  rating={product.rating}
+                  numReviews={product.numReviews}
+                />
+              </div>
+
+              <div className="mt-4 text-gray-600">
+                <div className="mb-2">
+                  <span className="font-medium">برند: </span>
+                  <span>{product.brand}</span>
+                </div>
+                <div className="mb-2">
+                  <span className="font-medium">وضعیت: </span>
+                  <span>
+                    {product.countInStock > 0 ? (
+                      <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
+                        موجود
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2 py-1 text-xs bg-red-100 text-red-800 rounded">
+                        ناموجود
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <span className="font-medium">قیمت: </span>
+                  <span className="text-xl font-bold">
+                    <PriceComma value={product.price} /> تومان
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4 text-gray-700">{product.description}</div>
+
+              {/* desktop actions */}
+              <div className="hidden md:block mt-6 p-4 border rounded bg-white w-full max-w-[320px]">
+                {product.countInStock ? (
+                  <>
+                    <div className="mb-3">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        onClick={addToCartHandler}
+                        className="w-full p-3 rounded bg-high text-bg font-medium disabled:opacity-60"
+                      >
+                        افزودن به سبد خرید
+                      </motion.button>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      تعداد در انبار: {product.countInStock}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-red-600 font-medium">
+                    در حال حاضر موجود نیست
                   </div>
-                  <h1 className="mt-15">
-                    <PriceComma value={product.price} /> Toman
-                  </h1>
-                  <div className="flex justify-between">
-                    <motion.button
-                      initial={{ backgroundColor: '#16A34A' }}
-                      whileHover={{ backgroundColor: '#DC2626' }}
-                      whileTap={{ backgroundColor: '#FF0000' }}
-                      onClick={addToCartHandler}
-                      transition={{ duration: 0.2 }}
-                      className="mt-2 mb-auto p-3 h-[65%] rounded-xl"
-                    >
-                      add to cart
-                    </motion.button>
-                    <button> amount</button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <h1>Not Available</h1>
-                </>
-              )}
+                )}
+              </div>
             </div>
-            {/* until here */}
+
+            {/* mobile fixed bar */}
+            <div className="md:hidden fixed left-0 right-0 bottom-0 border-t bg-white p-3 flex items-center justify-between">
+              <div>
+                <div className="text-sm text-gray-500">قیمت</div>
+                <div className="text-lg font-bold">
+                  <PriceComma value={product.price} /> تومان
+                </div>
+              </div>
+              <div>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  onClick={addToCartHandler}
+                  disabled={product.countInStock === 0}
+                  className={`px-4 py-2 rounded text-white ${
+                    product.countInStock ? 'bg-high' : 'bg-gray-400'
+                  }`}
+                >
+                  {product.countInStock ? 'افزودن به سبد' : 'ناموجود'}
+                </motion.button>
+              </div>
+            </div>
           </div>
-          <div className="my-3">
-            <h2 ref={reviewsRef}>Reviews</h2>
+
+          <div className="w-[90%] ms-[5%] mt-6">
+            <h2 ref={reviewsRef} className="text-xl font-semibold mb-3">
+              نظرات
+            </h2>
             <div className="mb-3">
               {product.reviews.length === 0 && (
-                <MessageBox>There is no review</MessageBox>
+                <MessageBox>هنوز نظری ثبت نشده است</MessageBox>
               )}
             </div>
-            <div>
+            <div className="space-y-4">
               {product.reviews.map((review) => (
-                <div key={review._id}>
-                  <strong>{review.name}</strong>
-                  <Rating rating={review.rating} caption=" "></Rating>
-                  <p>{review.createdAt.substring(0, 10)}</p>
-                  <p>{review.comment}</p>
+                <div key={review._id} className="p-3 border rounded bg-white">
+                  <div className="flex items-center justify-between">
+                    <strong>{review.name}</strong>
+                    <span className="text-xs text-gray-500">
+                      {review.createdAt.substring(0, 10)}
+                    </span>
+                  </div>
+                  <Rating rating={review.rating} caption=" " />
+                  <p className="mt-2 text-gray-700">{review.comment}</p>
                 </div>
               ))}
             </div>
-            <div className="my-3">
+
+            <div className="mt-6">
               {userInfo ? (
-                <form onSubmit={submitHandler}>
-                  <h2>Write a customer review</h2>
-                  <div className="mb-3">
-                    <label>Rating</label>
+                <form onSubmit={submitHandler} className="space-y-3">
+                  <h3 className="text-lg font-medium">ثبت نظر</h3>
+                  <div>
+                    <label className="block mb-1">امتیاز</label>
                     <select
                       aria-label="Rating"
                       value={rating}
-                      onChange={(e) => setRating(e.target.value)}
+                      onChange={(e) => setRating(Number(e.target.value))}
+                      className="p-2 border rounded"
                     >
-                      <option value="">Select...</option>
-                      <option value="1">1- Poor</option>
-                      <option value="2">2- Fair</option>
-                      <option value="3">3- Good</option>
-                      <option value="4">4- Very good</option>
-                      <option value="5">5- Excelent</option>
+                      <option value={0}>انتخاب...</option>
+                      <option value={1}>1 - ضعیف</option>
+                      <option value={2}>2 - متوسط</option>
+                      <option value={3}>3 - خوب</option>
+                      <option value={4}>4 - بسیار خوب</option>
+                      <option value={5}>5 - عالی</option>
                     </select>
                   </div>
-                  <label
-                    label="Comments"
-                    className="mb-3"
-                  >
-                    <input
-                      type="textarea"
-                      placeholder="Leave a comment here"
+
+                  <div>
+                    <label className="block mb-1">نظر</label>
+                    <textarea
+                      rows="4"
+                      placeholder="نظر خود را بنویسید"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
+                      className="w-full p-2 border rounded"
                     />
-                  </label>
+                  </div>
 
-                  <div className="mb-3">
-                    <button disabled={loadingCreateReview} type="submit">
-                      Submit
+                  <div>
+                    <button
+                      disabled={loadingCreateReview}
+                      type="submit"
+                      className="px-4 py-2 rounded bg-high text-bg"
+                    >
+                      ارسال
                     </button>
-                    {loadingCreateReview && <LoadingBox></LoadingBox>}
+                    {loadingCreateReview && <LoadingBox />}
                   </div>
                 </form>
               ) : (
                 <MessageBox>
-                  Please{' '}
+                  لطفا{' '}
                   <Link to={`/signin?redirect=/product/${product.slug}`}>
-                    Sign In
+                    وارد شوید
                   </Link>{' '}
-                  to write a review
+                  تا بتوانید نظر ثبت کنید
                 </MessageBox>
               )}
             </div>

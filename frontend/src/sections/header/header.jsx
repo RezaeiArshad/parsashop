@@ -70,7 +70,7 @@ export default function Header() {
               onMouseLeave={userMouseLeave}
             >
               <button
-                onClick={() => setShowMenu(true)}
+                onClick={() => setShowMenu(!showMenu)}
                 className="flex-center font-medium cursor-pointer focus:outline-none gap-0.5"
               >
                 {userInfo.name}
@@ -176,7 +176,7 @@ export default function Header() {
                     >
                       داشبورد
                     </Link>
-                    <div className="h-[1px] w-[80%] mb-1 mx-auto bg-fg2"></div>
+                    <div className="h-[2px] w-[80%] mb-1 mx-auto bg-fg2"></div>
                     <Link
                       to="/admin/products"
                       className="block px-4 py-2 mb-1 text-sm hover:bg-gray-100"
@@ -184,7 +184,7 @@ export default function Header() {
                     >
                       محصولات
                     </Link>
-                    <div className="h-[2px] w-[80%] mb-1 mx-auto bg-fg2"></div>
+                    <div className="h-[1.5px] w-[80%] mb-1 mx-auto bg-fg2"></div>
                     <Link
                       to="/admin/orders"
                       className="block px-4 py-2 mb-1 text-sm hover:bg-gray-100"

@@ -38,7 +38,7 @@ export default function DashBoardScreen() {
         const { data } = await axios.get('/api/orders/summary', {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-          dispatch({ type: 'FETCH_SUCCESS', payload: data})        
+        dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({
           type: 'FETCH_FAIL',
@@ -49,69 +49,110 @@ export default function DashBoardScreen() {
     fetchData();
   }, [userInfo]);
 
-  usePageTitle('Dashboard');
-  
+  usePageTitle('داشبورد');
+
+  // helpers
+  const fmtNum = (n) =>
+    typeof n === 'number' ? n.toLocaleString() : n ? String(n) : '0';
+  const fmtMoney = (n) =>
+    typeof n === 'number'
+      ? n.toLocaleString() + ' تومان'
+      : n
+      ? String(n)
+      : '0 تومان';
+
+  const usersCount = summary?.users?.[0]?.numUsers ?? 0;
+  const ordersCount = summary?.orders?.[0]?.numOrders ?? 0;
+  const totalSales = summary?.orders?.[0]?.totalSales ?? 0;
+  const dailyOrders = summary?.dailyOrders ?? [];
+  const categories = summary?.productCategories ?? [];
+
   return (
     <>
-      <div>
-        <h1>داشبورد</h1>
+      <div className="w-[90%] ms-[5%] mt-[2vh]">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">داشبورد</h1>
+          <span className="text-sm text-gray-600">
+            {fmtNum(usersCount)} کاربر
+          </span>
+        </div>
+
         {loading ? (
           <LoadingBox />
         ) : error ? (
-          <MessageBox>{error}</MessageBox>
+          <MessageBox variant="danger">{error}</MessageBox>
         ) : (
           <>
-            <div>
-              <h1>تعداد کاربرها</h1>
-              {summary.users && summary.users[0]
-                ? summary.users[0].numUsers
-                : 0}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div className="p-4 bg-white border rounded shadow-sm">
+                <div className="text-sm text-gray-500">تعداد کاربران</div>
+                <div className="text-2xl font-bold mt-2">
+                  {fmtNum(usersCount)}
+                </div>
+              </div>
+              <div className="p-4 bg-white border rounded shadow-sm">
+                <div className="text-sm text-gray-500">تعداد سفارش‌ها</div>
+                <div className="text-2xl font-bold mt-2">
+                  {fmtNum(ordersCount)}
+                </div>
+              </div>
+              <div className="p-4 bg-white border rounded shadow-sm">
+                <div className="text-sm text-gray-500">حجم درآمد</div>
+                <div className="text-2xl font-bold mt-2">
+                  {fmtMoney(Number(totalSales) || 0)}
+                </div>
+              </div>
             </div>
-            <div>
-              <h1>تعداد سفارش ها</h1>
-              {summary.orders && summary.orders[0]
-                ? summary.orders[0].numOrders
-                : 0}
-            </div>
-            <div>
-              <h1>حجم درآمد</h1>
-              {summary.orders && summary.users[0]
-                ? summary.orders[0].totalSales.toFixed(2)
-                : 0}
-            </div>
-            <div>
-            <h1>فروش ها</h1>
-            {summary.dailyOrders.length === 0 ? (
-              <MessageBox>موردی یافت نشد</MessageBox>
-            ) : (
-              <Chart
-                width="100%"
-                height="80rem"
-                chartType="AreaChart"
-                loader={<div>در حال بارگذاری...</div>}
-                data={[
-                  ['Date', 'Sales'],
-                  ...summary.dailyOrders.map((x) => [x._id, x.sales]),
-                ]}
-              ></Chart>
-            )}
-            </div>
-            <div>
-              <h2>دسته بندی ها</h2>
-              {summary.productCategories.length === 0 ? (
-                <MessageBox>موردی یافت نشد</MessageBox>
-              ) : (
-                <Chart
-                  width="100%"
-                  height="80rem"
-                  chartType="PieChart"
-                  loader={<div>در حال بارگذاری...</div>}
-                  data={[
-                    ['Category', 'Products'],
-                    ...summary.productCategories.map((x) => [x._id, x.count]),
-                  ]}
-                ></Chart>
-              )}
+
+            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white border rounded p-4">
+                <h2 className="text-lg font-medium mb-3">فروش روزانه</h2>
+                {dailyOrders.length === 0 ? (
+                  <MessageBox>موردی یافت نشد</MessageBox>
+                ) : (
+                  <Chart
+                    width="100%"
+                    height="300px"
+                    chartType="AreaChart"
+                    loader={<div>در حال بارگذاری...</div>}
+                    data={[
+                      ['تاریخ', 'فروش'],
+                      ...dailyOrders.map((x) => [x._id, x.sales]),
+                    ]}
+                    options={{
+                      hAxis: { title: 'روز' },
+                      vAxis: { title: 'فروش (تومان)' },
+                      legend: { position: 'none' },
+                      areaOpacity: 0.2,
+                    }}
+                  />
+                )}
+              </div>
+
+              <div className="bg-white border rounded p-4">
+                <h2 className="text-lg font-medium mb-3">دسته‌بندی محصولات</h2>
+                {categories.length === 0 ? (
+                  <MessageBox>موردی یافت نشد</MessageBox>
+                ) : (
+                  <Chart
+                    width="100%"
+                    height="300px"
+                    chartType="PieChart"
+                    loader={<div>در حال بارگذاری...</div>}
+                    data={[
+                      ['دسته', 'تعداد'],
+                      ...categories.map((x) => [x._id, x.count]),
+                    ]}
+                    options={{
+                      legend: {
+                        position: 'right',
+                        textStyle: { fontSize: 12 },
+                      },
+                      pieHole: 0.3,
+                    }}
+                  />
+                )}
+              </div>
             </div>
           </>
         )}
