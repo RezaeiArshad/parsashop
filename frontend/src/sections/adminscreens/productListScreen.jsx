@@ -8,6 +8,8 @@ import MessageBox from '../../components/messagebox';
 import { getError } from '../../utils';
 import { plusSignSvg } from './adminSvg';
 import { motion } from 'motion/react';
+import ConfirmBox from '../../components/confirmBox';
+import useConfirm from '../../hooks/useConfirm';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -96,7 +98,8 @@ export default function ProductListScreen() {
   }, [page, userInfo, successDelete]);
 
   const createHandler = async () => {
-    if (window.confirm('Are you sure to create?')) {
+    const ok = await useConfirm()('Are you sure to create?');
+    if (!ok) return;
       try {
         dispatch({ type: 'CREATE_REQUEST' });
         const { data } = await axios.post(
@@ -115,7 +118,6 @@ export default function ProductListScreen() {
           type: 'CREATE_FAIL',
         });
       }
-    }
   };
 
   const deleteHandler = async (product) => {
@@ -137,6 +139,7 @@ export default function ProductListScreen() {
 
   return (
     <div className="w-[90%] ms-[5%] mt-[2vh]">
+      <ConfirmBox />
       <h1 className="text-4xl">محصولات</h1>
       <motion.button
         initial={{ scale: 1 }}

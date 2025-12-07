@@ -123,7 +123,7 @@ export default function MessageToast() {
   return (
     <>
       <AnimatePresence>
-        {messageToastDetails[0] ? (
+        {messageToastDetails[0] && (
           <motion.div
             key={messageToastDetails[1] || 'toast'}
             initial={{ opacity: 0 }}
@@ -171,9 +171,8 @@ export default function MessageToast() {
               ></motion.div>
             </motion.div>
           </motion.div>
-        ) : (
-          <></>
-        )}
+        )
+        }
       </AnimatePresence>
     </>
   );
