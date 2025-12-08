@@ -87,7 +87,7 @@ export default function UserEditScreen() {
     }
   };
 
-  usePageTitle(`Edit User ${userId}`)
+  usePageTitle(`Edit User ${userId}`);
 
   return (
     <>
@@ -99,7 +99,7 @@ export default function UserEditScreen() {
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <form onSubmit={submitHandler}>
-          <div className="mb-3" controlId="name">
+          <div className="mb-3" id="name">
             <label>Name</label>
             <input
               value={name}
@@ -107,7 +107,7 @@ export default function UserEditScreen() {
               required
             />
           </div>
-          <div className="mb-3" controlId="email">
+          <div className="mb-3" id="email">
             <label>Email</label>
             <input
               value={email}

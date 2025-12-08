@@ -5,8 +5,9 @@ import axios from 'axios';
 import { Store } from '../../store';
 import { getError } from '../../utils';
 import LoadingBox from '../../components/loadingbox';
-import MessageBox from '../../components/messageBox';
+import MessageBox from '../../components/messagebox';
 import { usePageTitle } from '../../hooks/usepagetitle';
+import { motion } from 'motion/react';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -155,110 +156,173 @@ export default function ProductEditScreen() {
   };
 
   return (
-    <>
-      <h1>تغییر مشخصات برای {productId}</h1>
+    <div className="w-[90%] ms-[5%] mt-[2vh]">
+      <h1 className="text-4xl mb-3">تغییر مشخصات برای {productId}</h1>
+      <div className="mb-4 flex items-center gap-3">
+        <motion.button
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex-center font-medium gap-1 cursor-pointer bg-high text-bg px-3 py-2 rounded-md"
+          onClick={() => {}}
+        >
+          ویرایش سریع
+        </motion.button>
+      </div>
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
-        <form onSubmit={submitHandler}>
-          <div className="mb-3">
-            <label>Name</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+        <form onSubmit={submitHandler} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Name</label>
+              <input
+                className="w-full border rounded px-2 py-1"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Slug</label>
+              <input
+                className="w-full border rounded px-2 py-1"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Price</label>
+              <input
+                className="w-full border rounded px-2 py-1"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Image URL
+              </label>
+              <input
+                className="w-full border rounded px-2 py-1"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                required
+              />
+            </div>
           </div>
-          <div className="mb-3">
-            <label>Slug</label>
-            <input
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label>Price</label>
-            <input
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label>Image File</label>
-            <input
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label>Upload Images</label>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Upload Image
+            </label>
             <input type="file" onChange={uploadFileHandler} />
             {loadingUpload && <LoadingBox></LoadingBox>}
           </div>
-          <div className="mb-3" controlId="additionalImage">
-            <label>Additional Images</label>
-            {images.length === 0 && <MessageBox>No image</MessageBox>}
-            <div variant="flush">
-              {images.map((x) => (
-                <div key={x}>
-                  {x}
-                  <button variant="light" onClick={() => deleteFileHandler(x)}>
-                    <i className="fa fa-times-circle"></i>
-                  </button>
-                </div>
-              ))}
-            </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Additional Images
+            </label>
+            {images.length === 0 ? (
+              <MessageBox>هیچ تصویری نیست</MessageBox>
+            ) : (
+              <div className="grid grid-cols-3 gap-3">
+                {images.map((x) => (
+                  <div
+                    key={x}
+                    className="relative border rounded overflow-hidden"
+                  >
+                    <img
+                      src={x}
+                      alt="additional"
+                      className="w-full h-24 object-cover"
+                    />
+                    <motion.button
+                      type="button"
+                      onClick={() => deleteFileHandler(x)}
+                      whileHover={{ scale: 1.05 }}
+                      className="absolute top-1 right-1 bg-white/80 rounded-full p-1 text-red-600"
+                    >
+                      <i className="fa fa-times"></i>
+                    </motion.button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          <div className="mb-3" controlId="additionalImageFile">
-            <label>Upload Aditional Image</label>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Upload Additional Image
+            </label>
             <input type="file" onChange={(e) => uploadFileHandler(e, true)} />
             {loadingUpload && <LoadingBox></LoadingBox>}
           </div>
-          <div className="mb-3">
-            <label>Category</label>
-            <input
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Category</label>
+              <input
+                className="w-full border rounded px-2 py-1"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Brand</label>
+              <input
+                className="w-full border rounded px-2 py-1"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+              />
+            </div>
           </div>
-          <div className="mb-3">
-            <label>Brand</label>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Count In Stock
+            </label>
             <input
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label>Count In Stock</label>
-            <input
+              className="w-full border rounded px-2 py-1"
               value={countInStock}
               onChange={(e) => setCountInStock(e.target.value)}
               required
             />
           </div>
-          <div className="mb-3">
-            <label>Description</label>
-            <input
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Description
+            </label>
+            <textarea
+              className="w-full border rounded px-2 py-1"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
             />
           </div>
+
           <div className="mb-3">
-            <button disabled={loadingUpdate} type="submit">
+            <motion.button
+              disabled={loadingUpdate}
+              type="submit"
+              initial={{ scale: 1 }}
+              whileHover={{ scale: 1.03 }}
+              className="flex-center font-medium gap-1 mt-2 cursor-pointer bg-high text-bg px-3 py-2 rounded-md"
+            >
               Update
-            </button>
+            </motion.button>
             {loadingUpdate && <LoadingBox></LoadingBox>}
           </div>
         </form>
       )}
-    </>
+    </div>
   );
 }

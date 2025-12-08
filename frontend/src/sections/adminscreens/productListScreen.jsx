@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Store } from '../../store';
 import { toast } from 'react-toastify';
+import { MessageToastContext } from '../../contexts/messageScreenContext';
 import LoadingBox from '../../components/loadingbox';
 import MessageBox from '../../components/messagebox';
 import { getError } from '../../utils';
@@ -53,6 +54,7 @@ const reducer = (state, action) => {
 };
 
 export default function ProductListScreen() {
+    const { setMessageToastDetails } = useContext(MessageToastContext);
   const [
     {
       loading,
@@ -77,6 +79,7 @@ export default function ProductListScreen() {
   const { state } = useContext(Store);
   const { userInfo } = state;
 
+  const confirm = useConfirm();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -98,42 +101,42 @@ export default function ProductListScreen() {
   }, [page, userInfo, successDelete]);
 
   const createHandler = async () => {
-    const ok = await useConfirm()('Are you sure to create?');
+    const ok = await confirm('آیا مطمئن هستید که می‌خواهید یک محصول جدید ایجاد کنید؟');
     if (!ok) return;
-      try {
-        dispatch({ type: 'CREATE_REQUEST' });
-        const { data } = await axios.post(
-          '/api/products',
-          {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        toast.success('product created successfully');
-        dispatch({ type: 'CREATE_SUCCESS' });
-        navigate(`/admin/product/${data.product._id}`);
-      } catch (err) {
-        toast.error(getError(err));
-        dispatch({
-          type: 'CREATE_FAIL',
-        });
-      }
+    try {
+      dispatch({ type: 'CREATE_REQUEST' });
+      const { data } = await axios.post(
+        '/api/products',
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      setMessageToastDetails([true, true, 'محصول با موفقیت ایجاد شد']);
+      dispatch({ type: 'CREATE_SUCCESS' });
+      navigate(`/admin/product/${data.product._id}`);
+    } catch (err) {
+      setMessageToastDetails([true, false, getError(err)]);
+      dispatch({
+        type: 'CREATE_FAIL',
+      });
+    }
   };
 
   const deleteHandler = async (product) => {
-    if (window.confirm('Are you sure to delete?')) {
-      try {
-        await axios.delete(`/api/products/${product._id}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
-        toast.success('product deleted successfully');
-        dispatch({ type: 'DELETE_SUCCESS' });
-      } catch (err) {
-        toast.error(getError(err));
-        dispatch({
-          type: 'DELETE_FAIL',
-        });
-      }
+    const ok = await confirm('Are you sure to delete?');
+    if (!ok) return;
+    try {
+      await axios.delete(`/api/products/${product._id}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      setMessageToastDetails([true, true, 'محصول با موفقیت حذف شد']);
+      dispatch({ type: 'DELETE_SUCCESS' });
+    } catch (err) {
+      setMessageToastDetails([true, false, getError(err)]);
+      dispatch({
+        type: 'DELETE_FAIL',
+      });
     }
   };
 

@@ -1,7 +1,7 @@
 import express from 'express';
-import Product from '../models/productmodel.js';
-import { isAuth, isAdmin } from '../utils.js'; 
-import expressAsyncHandler from 'express-async-handler'
+import Product, { CATEGORIES } from '../models/productmodel.js';
+import { isAuth, isAdmin } from '../utils.js';
+import expressAsyncHandler from 'express-async-handler';
 
 const productRouter = express.Router();
 
@@ -20,7 +20,8 @@ productRouter.post(
       slug: 'sample-name-' + Date.now(),
       image: '/images/p1.jpg',
       price: 0,
-      category: 'sample category',
+      // use a valid category from the model enum to avoid validation errors
+      category: CATEGORIES && CATEGORIES.length ? CATEGORIES[0] : 'ماژول',
       brand: 'sample brand',
       countInStock: 0,
       rating: 0,

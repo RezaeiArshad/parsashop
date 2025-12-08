@@ -140,7 +140,7 @@ export default function MessageToast() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
               transition={{ duration: 0.3 }}
-              className="w-80 rounded-b-xl overflow-hidden rounded-t-md absolute bottom-[12vh] left-1/2 -translate-x-1/2 h-27"
+              className="w-80 rounded-b-xl overflow-hidden rounded-t-md absolute bottom-[12vh] left-1/2 -translate-x-1/2 min-h-27 h-fit"
               style={{
                 backdropFilter: 'blur(10px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -157,7 +157,7 @@ export default function MessageToast() {
               >
                 {closeSvg}
               </motion.button>
-              <div className="flex justify-between gap-2 w-[90%] mx-[5%]">
+              <div className="flex justify-between gap-2 w-[90%] mx-[5%] mb-2">
                 <h1 className="font-medium pt-1">{messageToastDetails[2]}</h1>
                 <h1 className="h-fit">
                   {messageToastDetails[1] ? successSvg : errorSvg}

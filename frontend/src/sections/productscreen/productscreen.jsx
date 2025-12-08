@@ -1,7 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useReducer, useEffect, useContext, useRef, useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import Rating from '../../components/rating';
 import { usePageTitle } from '../../hooks/usepagetitle';
 import LoadingBox from '../../components/loadingbox';
@@ -112,7 +111,7 @@ function ProductScreen() {
       dispatch({
         type: 'CREATE_SUCCESS',
       });
-      toast.success('نظر با موفقیت ثبت شد');
+      setMessageToastDetails([true, true, 'نظر با موفقیت ثبت شد']);
       product.reviews.unshift(data.review);
       product.numReviews = data.numReviews;
       product.rating = data.rating;
@@ -124,7 +123,7 @@ function ProductScreen() {
       setComment('');
       setRating(0);
     } catch (error) {
-      toast.error(getError(error));
+      setMessageToastDetails([true, false, getError(error)]);
       dispatch({ type: 'CREATE_FAIL' });
     }
   };
