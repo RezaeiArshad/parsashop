@@ -54,7 +54,7 @@ const reducer = (state, action) => {
 };
 
 export default function ProductListScreen() {
-    const { setMessageToastDetails } = useContext(MessageToastContext);
+  const { setMessageToastDetails } = useContext(MessageToastContext);
   const [
     {
       loading,
@@ -89,19 +89,20 @@ export default function ProductListScreen() {
 
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
-        console.log(err);
-      }
-      if (successDelete) {
-        dispatch({ type: 'DELETE_RESET' });
-      } else {
-        fetchData();
+        // ignored just for fun
       }
     };
-    fetchData();
+    if (successDelete) {
+      dispatch({ type: 'DELETE_RESET' });
+    } else {
+      fetchData();
+    }
   }, [page, userInfo, successDelete]);
 
   const createHandler = async () => {
-    const ok = await confirm('آیا مطمئن هستید که می‌خواهید یک محصول جدید ایجاد کنید؟');
+    const ok = await confirm(
+      'آیا مطمئن هستید که می‌خواهید یک محصول جدید ایجاد کنید؟'
+    );
     if (!ok) return;
     try {
       dispatch({ type: 'CREATE_REQUEST' });
@@ -124,7 +125,9 @@ export default function ProductListScreen() {
   };
 
   const deleteHandler = async (product) => {
-    const ok = await confirm('Are you sure to delete?');
+    const ok = await confirm(
+      'آیا مطمئن هستید که می‌خواهید این محصول را حذف کنید؟'
+    );
     if (!ok) return;
     try {
       await axios.delete(`/api/products/${product._id}`, {
