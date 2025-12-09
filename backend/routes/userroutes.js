@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import expressAsyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
 import User from '../models/usermodel.js';
 import { generateToken, isAuth, isAdmin } from '../utils.js';
 
@@ -38,6 +39,80 @@ userRouter.put(
     } else {
       res.status(404).send({ message: 'User Not Found' });
     }
+  })
+);
+
+userRouter.post(
+  '/request-temporary-token',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ number: req.body.number });
+
+    if (user) {
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: '3h',
+      });
+      user.temporaryToken = token;
+      await user.save();
+
+      //reset link
+      console.log(`${baseUrl()}/temporary-token/${token}`);
+
+      mailgun()
+        .messages()
+        .send(
+          {
+            from: 'Amazona <me@mg.yourdomain.com>',
+            to: `${user.name} <${user.email}>`,
+            subject: `Reset Password`,
+            html: ` 
+             <p>Please Click the following link to reset your password:</p> 
+             <a href="${baseUrl()}/reset-password/${token}"}>Reset Password</a>
+             `,
+          },
+          (error, body) => {
+            console.log(error);
+            console.log(body);
+          }
+        );
+      res.send({ message: 'We sent reset password link to your email.' });
+    } else {
+      res.status(404).send({ message: 'User not found' });
+    }
+  })
+);
+
+userRouter.post(
+  '/reset-password',
+  expressAsyncHandler(async (req, res) => {
+    jwt.verify(req.body.token, process.env.JWT_SECRET, async (err, decode) => {
+      if (err) {
+        const message =
+          err.name === 'TokenExpiredError'
+            ? 'Reset link has expired'
+            : 'Invalid token';
+        return res.status(401).send({ message });
+      } else {
+        const user = await User.findOne({ temporaryToken: req.body.token });
+        if (user) {
+          if (!req.body.password) {
+            return res.status(400).send({ message: 'Password is required' });
+          } else if (req.body.password) {
+            return res
+              .status(400)
+              .send({ message: 'Password must be at least 8 characters' });
+          } else {
+            user.password = bcrypt.hashSync(req.body.password, 8);
+            user.temporaryToken = null;
+            await user.save();
+            res.send({
+              message: 'Password reseted successfully',
+            });
+          }
+        } else {
+          res.status(404).send({ message: 'User not found' });
+        }
+      }
+    });
   })
 );
 

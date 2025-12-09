@@ -17,6 +17,7 @@
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
+    "melipayamak": "^1.0.0",
     "mongoose": "^8.19.3",
     "multer": "^2.0.2",
     "sharp": "^0.34.5",
