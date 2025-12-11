@@ -15,7 +15,7 @@ export default function SigninScreen() {
   const redirectInUrl = new URLSearchParams(search).get('redirect');
   const redirect = redirectInUrl ? redirectInUrl : '/';
 
-  const [email, setEmail] = useState('');
+  const [number, setNumber] = useState('');
   const [password, setPassword] = useState('');
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -25,7 +25,7 @@ export default function SigninScreen() {
     e.preventDefault();
     try {
       const { data } = await Axios.post('/api/users/signin', {
-        email,
+        number,
         password,
       });
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
@@ -48,16 +48,16 @@ export default function SigninScreen() {
       <div className="flex h-[92vh]">
         <div className="md:w-[50%] md:ms-[25%] lg:w-[40%] lg:ms-[30%]">
           <h1 className="w-fit ms-auto me-auto my-5 text-5xl">
-            Sing In
+            خوش آمدید
           </h1>
           <form onSubmit={submitHandler} className="mt-3 border border-0.5 border-fg2 rounded-xl p-4">
             <div className="email-div">
-              <label className="text-2xl">Email</label>
+              <label className="text-2xl">شماره تلفن</label>
               <input
                 className="h-8 w-[100%] border border-fg2 rounded-xl p-2"
-                type="email"
+                type="number"
                 required
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setNumber(e.target.value)}
               />
             </div>
             <div className="password-div mt-3">

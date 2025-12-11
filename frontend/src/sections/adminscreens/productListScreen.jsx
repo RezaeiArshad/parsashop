@@ -2,14 +2,12 @@ import { useContext, useEffect, useReducer } from 'react';
 import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Store } from '../../store';
-import { toast } from 'react-toastify';
 import { MessageToastContext } from '../../contexts/messageScreenContext';
 import LoadingBox from '../../components/loadingbox';
 import MessageBox from '../../components/messagebox';
 import { getError } from '../../utils';
 import { plusSignSvg } from './adminSvg';
 import { motion } from 'motion/react';
-import ConfirmBox from '../../components/confirmBox';
 import useConfirm from '../../hooks/useConfirm';
 
 const reducer = (state, action) => {
@@ -145,7 +143,6 @@ export default function ProductListScreen() {
 
   return (
     <div className="w-[90%] ms-[5%] mt-[2vh]">
-      <ConfirmBox />
       <h1 className="text-4xl">محصولات</h1>
       <motion.button
         initial={{ scale: 1 }}

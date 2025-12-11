@@ -1,7 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import expressAsyncHandler from 'express-async-handler';
-import jwt from 'jsonwebtoken';
 import User from '../models/usermodel.js';
 import { sendSms } from '../services/melipayamakService.js';
 import { generateToken, isAuth, isAdmin } from '../utils.js';
@@ -25,7 +24,7 @@ userRouter.put(
     const user = await User.findById(req.user._id);
     if (user) {
       user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
+      user.number = req.body.number || user.number;
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
@@ -33,7 +32,7 @@ userRouter.put(
       res.send({
         _id: updatedUser._id,
         name: updatedUser.name,
-        email: updatedUser.email,
+        number: updatedUser.number,
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser),
       });
@@ -62,7 +61,6 @@ userRouter.post(
     user.temporaryToken = null;
     await user.save();
 
-    // send OTP via SMS using Melipayamak (best-effort)
     try {
       let toNumber = String(user.number);
       if (/^0/.test(toNumber)) {
@@ -183,13 +181,13 @@ userRouter.delete(
 userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ number: req.body.number });
     if (user) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
           _id: user._id,
           name: user.name,
-          email: user.email,
+          number: user.number,
           isAdmin: user.isAdmin,
           token: generateToken(user),
         });
@@ -199,7 +197,7 @@ userRouter.post(
         return;
       }
     }
-    res.status(401).send({ message: 'Invalid email' });
+    res.status(401).send({ message: 'شماره پیدا نشد' });
   })
 );
 
@@ -208,14 +206,14 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const newUser = new User({
       name: req.body.name,
-      email: req.body.email,
+      number: req.body.number,
       password: bcrypt.hashSync(req.body.password),
     });
     const user = await newUser.save();
     res.send({
       _id: user._id,
       name: user.name,
-      email: user.email,
+      number: user.number,
       isAdmin: user.isAdmin,
       token: generateToken(user),
     });

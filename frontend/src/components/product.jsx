@@ -27,7 +27,7 @@ function Product(props) {
   return (
     <>
       <Link to={`/product/${product.slug}`}>
-        <img className="w-4/5" src={product.image} alt={product.name} />
+        <img className="w-4/5 h-60" src={product.image} alt={product.name} />
       </Link>
       <Link to={`/product/${product.slug}`}>
         <p>{product.name}</p>

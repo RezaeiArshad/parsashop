@@ -68,7 +68,7 @@ export default function ProfileScreen() {
         <div className="flex h-[92vh]">
           <div className="md:w-[50%] md:ms-[25%] lg:w-[40%] lg:ms-[30%]">
             <h1 className="w-fit ms-auto me-auto my-5 text-5xl">
-              User Profile
+              مشحصات کاربری
             </h1>
             <form
               onSubmit={submitHandler}

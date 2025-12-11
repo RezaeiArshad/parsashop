@@ -135,7 +135,7 @@ export default function OrderListScreen() {
                     whileHover={{ scale: 1.01 }}
                     className="border-b last:border-none"
                   >
-                    <td className="px-4 py-3 text-sm">{shortId(order._id)}</td>
+                    <td className="px-4 py-3 text-sm">{shortId(order._id)}{}</td>
                     <td className="px-4 py-3 text-sm">
                       {order.user ? order.user.name : 'DELETED USER'}
                     </td>

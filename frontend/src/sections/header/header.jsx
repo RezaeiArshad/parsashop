@@ -7,6 +7,7 @@ import HeaderMenu from './headermenu';
 import SearchBox from '../../components/searchbox';
 import { cartSvg } from './headerSvg';
 import { motion, AnimatePresence } from 'motion/react';
+import useConfirm from '../../hooks/useConfirm';
 
 export default function Header() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -17,7 +18,11 @@ export default function Header() {
   const timeoutRefUser = useRef(null);
   const timeoutRefAdmin = useRef(null);
 
-  const signoutHandler = () => {
+  const confirm = useConfirm()
+
+  const signoutHandler = async () => {
+    const ok = await confirm('آیا می‌خواهیداز حساب کاربری خارج شوید؟');  
+    if(!ok) return;
     ctxDispatch({ type: 'USER_SIGNOUT' });
     localStorage.removeItem('userInfo');
     localStorage.removeItem('shippingAddress');

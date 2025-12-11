@@ -1,11 +1,10 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import axios from 'axios';
 import { useReducer } from 'react';
 import Product from '../../components/product';
 import { usePageTitle } from '../../hooks/usepagetitle';
 import LoadingBox from '../../components/loadingbox';
 import MessageBox from '../../components/messagebox';
-import { AnimatePresence, motion } from 'motion/react';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -44,23 +43,21 @@ function Lobby() {
 
   return (
     <>
-      <p className="text-4xl ms-8 my-8">we are at the lobby</p>
+      <p className="text-4xl ms-8 my-8">در صفحه اصلی</p>
       <div className="products">
-        <AnimatePresence>
-          {loading ? (
-            <LoadingBox />
-          ) : error ? (
-            <MessageBox>{error}</MessageBox>
-          ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {products.map((product) => (
-                <div className="product p-3" key={product.slug}>
-                  <Product product={product}></Product>
-                </div>
-              ))}
-            </div>
-          )}
-        </AnimatePresence>
+        {loading ? (
+          <LoadingBox />
+        ) : error ? (
+          <MessageBox>{error}</MessageBox>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {products.map((product) => (
+              <div className="product p-3" key={product.slug}>
+                <Product product={product}></Product>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

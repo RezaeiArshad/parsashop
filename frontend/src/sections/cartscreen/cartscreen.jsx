@@ -35,10 +35,10 @@ export default function CartScreen() {
 
   return (
     <>
-      <h1 className="text-4xl ps-[10%] py-4">Shopping Cart</h1>
+      <h1 className="text-4xl ps-[10%] py-4">سبد خرید</h1>
       {cartItems.length === 0 ? (
         <MessageBox>
-          Cart is empty.<Link to="/">go Shopping</Link>
+          سبد خرید خالی است. <Link to="/">خرید کنید</Link>
         </MessageBox>
       ) : (
         <div className="flex">
