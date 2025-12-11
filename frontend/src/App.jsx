@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Lobby from './sections/lobby/lobby';
 import Header from './sections/header/header';
 import ProductScreen from './sections/productscreen/productscreen';
@@ -23,111 +24,177 @@ import OrderListScreen from './sections/adminscreens/orderListScreen';
 import UserListScreen from './sections/adminscreens/userListScreen';
 import UserEditScreen from './sections/adminscreens/userEditScreen';
 import MessageToast from './components/messageToast';
+import IntroPage from './components/introPage';
+import LoadingBox from './components/loadingbox';
+import { useTheme } from './hooks/usetheme';
+import { usePageTitle } from './hooks/usepagetitle';
+import { AnimatePresence, motion } from 'motion/react';
 
 function App() {
+  const {theme} = useTheme();
+
+  const [loadingApp, setLoadingApp] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
+
+  usePageTitle("Spiky Tech")
+
+  useEffect(() => {
+    const seen = localStorage.getItem('seenIntro') === 'true';
+    const t = setTimeout(() => {
+      setLoadingApp(false);
+      if (!seen) setShowIntro(true);
+    }, 900);
+    return () => clearTimeout(t);
+  }, []);
+
+  const handleCloseIntro = () => {
+    try {
+      localStorage.setItem('seenIntro', 'true');
+    } catch {
+      // ignored this one as well 
+    }
+    setShowIntro(false);
+  };
+
   return (
-    <div id="theme-div" className="overflow-x-hidden" dir="rtl">
+    <div className="theme-div overflow-x-hidden" dir="rtl">
       <link
         href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
       />
-      <div className="text-fg bg-bg dark:bg-bg-d dark:text-fg-d relative pb-15 transition-colors duration-300 pt-[10vh]">
-        <BrowserRouter>
-          <ToastContainer position="bottom-center" limit={1} />
-          <Header />
-          <div>
-            <Routes>
-              <Route path="/product/:slug" element={<ProductScreen />} />
-              <Route path="/" element={<Lobby />} />
-              <Route path="/cart" element={<CartScreen />} />
-              <Route path="/signin" element={<SigninScreen />} />
-              <Route path="/shipping" element={<ShippingAddressScreen />} />
-              <Route path="/signup" element={<SignupScreen />} />
-              <Route path="/payment" element={<PaymentMethodScreen />} />
-              <Route path="/placeorder" element={<PlaceOrderScreen />} />
-              <Route
-                path="/order/:id"
-                element={
-                  <ProtectedRoute>
-                    <OrderScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/orderhistory"
-                element={
-                  <ProtectedRoute>
-                    <OrderHistoryScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfileScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/search" element={<SearchScreen />} />
-              {/* these are the admin routes */}
+      <AnimatePresence mode="wait">
+        {loadingApp ? (
+          <motion.div
+          key='loading'
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{ duration: 0.3 }}
+            className="min-h-screen flex-center justify-center dark:bg-bg-d bg-bg translate-x-[22px]"
+          >
+            <LoadingBox />
+          </motion.div>
+        ) : showIntro ? (
+          <IntroPage key='intro' onClose={handleCloseIntro} />
+        ) : (
+          <motion.div
+          key='app'
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{ duration: 0.3 }}
+            className="text-fg bg-bg dark:bg-bg-d dark:text-fg-d relative pb-15 transition-colors duration-300 pt-[10vh]"
+          >
+            <BrowserRouter>
+              <ToastContainer position="bottom-center" limit={1} />
+              <div>
+                <Routes>
+                  <Route path="/product/:slug" element={<ProductScreen />} />
+                  <Route path="/" element={<Lobby />} />
+                  <Route path="/cart" element={<CartScreen />} />
+                  <Route path="/signin" element={<SigninScreen />} />
+                  <Route path="/shipping" element={<ShippingAddressScreen />} />
+                  <Route path="/signup" element={<SignupScreen />} />
+                  <Route path="/payment" element={<PaymentMethodScreen />} />
+                  <Route path="/placeorder" element={<PlaceOrderScreen />} />
+                  <Route
+                    path="/order/:id"
+                    element={
+                      <ProtectedRoute>
+                        <OrderScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/orderhistory"
+                    element={
+                      <ProtectedRoute>
+                        <OrderHistoryScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <ProfileScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="/search" element={<SearchScreen />} />
+                  {/* these are the admin routes */}
 
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <AdminRoute>
-                    <DashBoardScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/product/:id"
-                element={
-                  <AdminRoute>
-                    <ProductEditScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/products"
-                element={
-                  <AdminRoute>
-                    <ProductListScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/orders"
-                element={
-                  <AdminRoute>
-                    <OrderListScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/users"
-                element={
-                  <AdminRoute>
-                    <UserListScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/user/:id"
-                element={
-                  <AdminRoute>
-                    <UserEditScreen />
-                  </AdminRoute>
-                }
-              />
-            </Routes>
-          </div>
-          <MessageToast />
-          <footer className="py-3 absolute bottom-0 right-0 left-0">
-            <p className="text-center">all rights reserved</p>
-          </footer>
-        </BrowserRouter>
-      </div>
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <AdminRoute>
+                        <DashBoardScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/product/:id"
+                    element={
+                      <AdminRoute>
+                        <ProductEditScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/products"
+                    element={
+                      <AdminRoute>
+                        <ProductListScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/orders"
+                    element={
+                      <AdminRoute>
+                        <OrderListScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <AdminRoute>
+                        <UserListScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/user/:id"
+                    element={
+                      <AdminRoute>
+                        <UserEditScreen />
+                      </AdminRoute>
+                    }
+                  />
+                </Routes>
+              </div>
+              <Header />
+              <MessageToast />
+              <footer className="py-3 absolute bottom-0 right-0 left-0">
+                <p className="text-center">all rights reserved</p>
+              </footer>
+            </BrowserRouter>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

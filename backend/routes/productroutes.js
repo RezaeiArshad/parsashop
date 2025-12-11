@@ -20,7 +20,6 @@ productRouter.post(
       slug: 'sample-name-' + Date.now(),
       image: '/images/p1.jpg',
       price: 0,
-      // use a valid category from the model enum to avoid validation errors
       category: CATEGORIES && CATEGORIES.length ? CATEGORIES[0] : 'ماژول',
       brand: 'sample brand',
       countInStock: 0,

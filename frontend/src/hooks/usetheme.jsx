@@ -1,15 +1,11 @@
-// hooks/useTheme.js
-import { useEffect, useState } from 'react';
-
-const THEME_KEY = 'theme';
-const THEME_DIV_ID = 'theme-div'; // or 'html', 'body' — see note below
+import { useEffect, useState, useLayoutEffect } from 'react';
 
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
     // Initialize from localStorage or system preference
-    const saved = localStorage.getItem(THEME_KEY);
+    const saved = localStorage.getItem('theme');
     if (saved) return saved;
-    // Optional: fallback to system preference
+    // fallback to system preference
     if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
       return 'dark';
     }
@@ -17,17 +13,32 @@ export function useTheme() {
   });
 
   useEffect(() => {
-    // Update DOM class
     const el =
-      document.getElementById(THEME_DIV_ID) || document.documentElement;
+      document.getElementsByClassName('theme-div')[0] ||
+      document.documentElement;
     if (theme === 'dark') {
       el.classList.add('dark');
+      document.body.style.backgroundColor = '#121212';
     } else {
       el.classList.remove('dark');
+      document.body.style.backgroundColor = '#ffffff';
     }
-
     // Persist
-    localStorage.setItem(THEME_KEY, theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  useLayoutEffect(() => {
+    const el =
+      document.getElementsByClassName('theme-div')[0] ||
+      document.documentElement;
+    if (theme === 'dark') {
+      el.classList.add('dark');
+      document.body.style.backgroundColor = '#121212';
+    } else {
+      el.classList.remove('dark');
+      document.body.style.backgroundColor = '#ffffff';
+    }
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {
